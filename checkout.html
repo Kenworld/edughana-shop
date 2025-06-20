@@ -14,6 +14,43 @@
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/vendor/wow.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
+    <style>
+        /* Custom styles for checkout progress */
+        .progress-wrapper {
+            padding: 0 40px;
+        }
+
+        .progress-step {
+            text-align: center;
+            transform: translateY(-50%);
+        }
+
+        .step-circle {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Form Styles */
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25);
+        }
+
+        .payment-methods img {
+            object-fit: contain;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,7 +68,7 @@
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-5 col-6">
                         <div class="text-start text-lg-center">
-                            <a href="index-2.html" class="header-logo">
+                            <a href="index.html" class="header-logo">
                                 <img src="assets/media/logo.png" alt="">
                             </a>
                         </div>
@@ -40,7 +77,7 @@
                     <div class="col-lg-4 col-md-6 col-6">
                         <div class="header-end">
                             <div class="header-buttons">
-                                <a href="#" class="button-block">
+                                <a href="login.html" id="accountLink" class="button-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18"
                                         fill="none">
                                         <path
@@ -50,15 +87,19 @@
                                             d="M15.6199 12.5928C14.3205 11.2734 12.598 10.5469 10.7695 10.5469H8.66016C6.83175 10.5469 5.10916 11.2734 3.80979 12.5928C2.51678 13.9057 1.80469 15.6387 1.80469 17.4727C1.80469 17.7639 2.0408 18 2.33203 18H17.0977C17.3889 18 17.625 17.7639 17.625 17.4727C17.625 15.6387 16.9129 13.9057 15.6199 12.5928ZM2.88258 16.9453C3.14678 13.954 5.63711 11.6016 8.66016 11.6016H10.7695C13.7926 11.6016 16.2829 13.954 16.5471 16.9453H2.88258Z"
                                             fill="#1E1F20" />
                                     </svg>
+                                    <span id="userNamePlaceholder">Login/Sign Up</span>
                                 </a>
-                                <a href="#" class="button-block cart-button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18"
-                                        fill="none">
-                                        <path
-                                            d="M17.4869 16.1063C17.0473 13.0299 15.9747 5.52124 15.9747 5.52124C15.9376 5.26112 15.7148 5.06792 15.452 5.06792H13.1524V3.33377C12.9831 -1.11295 6.60873 -1.10957 6.44108 3.33377V5.06792H4.14146C3.8787 5.06792 3.65596 5.26112 3.61879 5.52124C3.61879 5.52124 2.54624 13.0299 2.10657 16.1063C2.03846 16.5828 2.18032 17.0645 2.49566 17.428C2.81101 17.7915 3.26782 18 3.74899 18H15.8445C16.3257 18 16.7825 17.7915 17.0978 17.428C17.4132 17.0646 17.555 16.5828 17.4869 16.1063ZM7.49708 3.33377C7.61306 0.286388 11.9815 0.288675 12.0964 3.33377V5.06792H7.49708V3.33377ZM16.3002 16.736C16.1855 16.8682 16.0194 16.944 15.8445 16.944H3.74899C3.57405 16.944 3.40798 16.8682 3.29331 16.736C3.1787 16.6039 3.12717 16.4289 3.15191 16.2557C3.52664 13.6339 4.361 7.79284 4.5994 6.12389H6.44111V7.29249C6.46709 7.99228 7.47135 7.99175 7.49708 7.29249V6.12389H12.0964V7.29249C12.1224 7.99228 13.1267 7.99175 13.1524 7.29249V6.12389H14.9941C15.2325 7.79284 16.0669 13.6339 16.4416 16.2557C16.4663 16.4289 16.4148 16.6039 16.3002 16.736Z"
-                                            fill="#1E1F20" />
-                                    </svg>
-                                </a>
+                                <div class="cart-button-wrapper">
+                                    <a href="#" class="button-block cart-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18"
+                                            viewBox="0 0 19 18" fill="none">
+                                            <path
+                                                d="M17.4869 16.1063C17.0473 13.0299 15.9747 5.52124 15.9747 5.52124C15.9376 5.26112 15.7148 5.06792 15.452 5.06792H13.1524V3.33377C12.9831 -1.11295 6.60873 -1.10957 6.44108 3.33377V5.06792H4.14146C3.8787 5.06792 3.65596 5.26112 3.61879 5.52124C3.61879 5.52124 2.54624 13.0299 2.10657 16.1063C2.03846 16.5828 2.18032 17.0645 2.49566 17.428C2.81101 17.7915 3.26782 18 3.74899 18H15.8445C16.3257 18 16.7825 17.7915 17.0978 17.428C17.4132 17.0646 17.555 16.5828 17.4869 16.1063ZM7.49708 3.33377C7.61306 0.286388 11.9815 0.288675 12.0964 3.33377V5.06792H7.49708V3.33377ZM16.3002 16.736C16.1855 16.8682 16.0194 16.944 15.8445 16.944H3.74899C3.57405 16.944 3.40798 16.8682 3.29331 16.736C3.1787 16.6039 3.12717 16.4289 3.15191 16.2557C3.52664 13.6339 4.361 7.79284 4.5994 6.12389H6.44111V7.29249C6.46709 7.99228 7.47135 7.99175 7.49708 7.29249V6.12389H12.0964V7.29249C12.1224 7.99228 13.1267 7.99175 13.1524 7.29249V6.12389H14.9941C15.2325 7.79284 16.0669 13.6339 16.4416 16.2557C16.4663 16.4289 16.4148 16.6039 16.3002 16.736Z"
+                                                fill="#1E1F20" />
+                                        </svg>
+                                        <span class="cart-badge" id="cartTotal">0</span> <!-- Badge -->
+                                    </a>
+                                </div>
 
                             </div>
 
@@ -147,7 +188,251 @@
 
 
             <!-- checkout Area Start -->
+            <section class="checkout-area py-5">
+                <div class="container-2">
+                    <!-- Progress Bar -->
+                    <div class="checkout-progress mb-5">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="progress-wrapper position-relative">
+                                    <div class="progress" style="height: 4px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 33%;"
+                                            aria-valuenow="33" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="d-flex justify-content-between position-absolute w-100 mt-2">
+                                        <div class="progress-step active">
+                                            <div class="step-circle bg-primary text-white">1</div>
+                                            <div class="step-label mt-2">Billing Details</div>
+                                        </div>
+                                        <div class="progress-step">
+                                            <div class="step-circle bg-light">2</div>
+                                            <div class="step-label mt-2">Shipping</div>
+                                        </div>
+                                        <div class="progress-step">
+                                            <div class="step-circle bg-light">3</div>
+                                            <div class="step-label mt-2">Payment</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
+                    <form id="checkout-form" class="needs-validation" novalidate>
+                        <div class="row">
+                            <!-- Billing Details -->
+                            <div class="col-lg-8">
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Billing Details</h5>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label for="firstName" class="form-label">First Name *</label>
+                                                <input type="text" class="form-control" id="firstName" required>
+                                                <div class="invalid-feedback">
+                                                    Please enter your first name
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="lastName" class="form-label">Last Name *</label>
+                                                <input type="text" class="form-control" id="lastName" required>
+                                                <div class="invalid-feedback">
+                                                    Please enter your last name
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="email" class="form-label">Email Address *</label>
+                                                <input type="email" class="form-control" id="email" required>
+                                                <div class="invalid-feedback">
+                                                    Please enter a valid email address
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="phone" class="form-label">Phone Number *</label>
+                                                <input type="tel" class="form-control" id="phone" required>
+                                                <div class="invalid-feedback">
+                                                    Please enter your phone number
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="address" class="form-label">Street Address *</label>
+                                                <input type="text" class="form-control mb-2" id="address"
+                                                    placeholder="House number and street name" required>
+                                                <input type="text" class="form-control" id="address2"
+                                                    placeholder="Apartment, suite, unit, etc. (optional)">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="city" class="form-label">Town / City *</label>
+                                                <input type="text" class="form-control" id="city" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="region" class="form-label">Region *</label>
+                                                <select class="form-select" id="region" required>
+                                                    <option value="">Select Region</option>
+                                                    <option>Greater Accra</option>
+                                                    <option>Ashanti</option>
+                                                    <option>Western</option>
+                                                    <option>Eastern</option>
+                                                    <!-- Add other regions -->
+                                                </select>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label for="region" class="form-label">Order Note(Optional) </label>
+                                                <textarea name="deliverNote" id="deliverNote" class="form-control"
+                                                    placeholder="Note about your order"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Methods -->
+                                <div class="card mb-4">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Payment Method</h5>
+                                        <div class="payment-methods">
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                                    id="momo" checked>
+                                                <label class="form-check-label d-flex align-items-center gap-2"
+                                                    for="momo">
+                                                    <img src="assets/media/icons/mtn.webp" alt="MTN"
+                                                        style="width: 40px;">
+                                                    Mobile Money
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                                    id="card">
+                                                <label class="form-check-label d-flex align-items-center gap-2"
+                                                    for="card">
+                                                    <img src="assets/media/icons/card-1.png" alt="Card"
+                                                        style="width: 40px;">
+                                                    Credit/Debit Card
+                                                </label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                                    id="cash">
+                                                <label class="form-check-label d-flex align-items-center gap-2"
+                                                    for="cash">
+                                                    <img src="assets/media/icons/cash-flow.png" alt="cash"
+                                                        style="width: 40px;">
+                                                    Cash On Delivery
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mobile Money Fields (Initially Visible) -->
+                                        <div id="momoFields" class="mt-4">
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Mobile Money Number *</label>
+                                                    <input type="tel" class="form-control" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Network *</label>
+                                                    <select class="form-select" required>
+                                                        <option value="">Select Network</option>
+                                                        <option>MTN Mobile Money</option>
+                                                        <option>Vodafone Cash</option>
+                                                        <option>AirtelTigo Money</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Card Fields (Initially Hidden) -->
+                                        <div id="cardFields" class="mt-4 d-none">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">Card Number *</label>
+                                                    <input type="text" class="form-control"
+                                                        placeholder="1234 5678 9012 3456">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Expiry Date *</label>
+                                                    <input type="text" class="form-control" placeholder="MM/YY">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">CVV *</label>
+                                                    <input type="text" class="form-control" placeholder="123">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Cash on delivery (Initially Hidden) -->
+                                        <div id="cashFields" class="mt-4 d-none">
+                                            <div class="row g-3">
+                                                <div class="col-12">
+                                                    <label class="form-label">Payment will be taken on delivery
+                                                        *</label>
+                                                    <input type="text" disabled class="form-control">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Order Summary -->
+                            <div class="col-lg-4">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title mb-4">Order Summary</h5>
+
+                                        <!-- Order Items -->
+                                        <div class="order-items mb-4">
+                                            <div class="d-flex align-items-center gap-3 mb-3">
+                                                <img src="assets/media/products/abacus.jpg" alt="Product"
+                                                    class="rounded"
+                                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">Abical Plastic Abacus</h6>
+                                                    <p class="mb-0 text-muted">Quantity: 1</p>
+                                                </div>
+                                                <div class="fw-semibold">GHS 30.00</div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-3 mb-3">
+                                                <img src="assets/media/products/interactive-board.jpg" alt="Product"
+                                                    class="rounded"
+                                                    style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-1">Interactive White Board</h6>
+                                                    <p class="mb-0 text-muted">Quantity: 2</p>
+                                                </div>
+                                                <div class="fw-semibold">GHS 3,000.00</div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Order Totals -->
+                                        <div class="order-totals">
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Subtotal</span>
+                                                <span class="fw-semibold">GHS 3,030.00</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between mb-2">
+                                                <span>Shipping</span>
+                                                <span class="fw-semibold">GHS 20.00</span>
+                                            </div>
+                                            <hr>
+                                            <div class="d-flex justify-content-between mb-4">
+                                                <span class="fw-bold">Total</span>
+                                                <span class="fw-bold color-primary">GHS 3,050.00</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Place Order Button -->
+                                        <button type="submit" class="cus-btn w-100">
+                                            <span class="btn-text">Place Order</span>
+                                            <span>Place Order</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </section>
             <!-- checkout Area End -->
             <!-- FOOTER START -->
             <footer class="pt-40 pb-32 bg-dark white">
@@ -155,7 +440,7 @@
                     <div class="row row-gap-3 mb-24">
                         <div class="col-xl-3 col-lg-4 col-md-10 col-sm-5 wow fadeInUp animated" data-wow-delay="400ms">
                             <div class="footer-info-block">
-                                <a href="index-2.html" class="mb-24">
+                                <a href="index.html" class="mb-24">
                                     <img src="assets/media/logo.png" alt="">
                                 </a>
                                 <p class="mb-24">Edu Ghana Shop is Your one-stop shop for quality school supplies – from
@@ -216,7 +501,7 @@
                             <h6 class="medium-black fw-700 mb-24 white"> Our Company</h6>
                             <ul class="list-unstyled mb-0">
                                 <li class="mb-8">
-                                    <a href="index-2.html">Home</a>
+                                    <a href="index.html">Home</a>
                                 </li>
                                 <li class="mb-8">
                                     <a href="about.html">About Us</a>
@@ -491,7 +776,46 @@
         </div>
     </div>
     <!-- Modal -->
+    <script type="module" src="assets/js/authentication.js"></script>
+    <script>
+        // Form validation
+        document.addEventListener('DOMContentLoaded', function () {
+            // Payment method toggle
+            const momoFields = document.getElementById('momoFields');
+            const cardFields = document.getElementById('cardFields');
+            const cashFields = document.getElementById('cashFields');
+            const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
 
+            paymentMethods.forEach(method => {
+                method.addEventListener('change', function () {
+                    if (this.id === 'momo') {
+                        momoFields.classList.remove('d-none');
+                        cardFields.classList.add('d-none');
+                        cashFields.classList.add('d-none');
+                    } else if (this.id === 'card') {
+                        cashFields.classList.add('d-none');
+                        momoFields.classList.add('d-none');
+                        cardFields.classList.remove('d-none');
+                    }
+                    else {
+                        cashFields.classList.remove('d-none');
+                        momoFields.classList.add('d-none');
+                        cardFields.classList.add('d-none');
+                    }
+                });
+            });
+
+            // Form validation
+            const form = document.getElementById('checkout-form');
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            });
+        });
+    </script>
     <!-- Jquery Js -->
     <script src="assets/js/vendor/bootstrap.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.3.min.js"></script>

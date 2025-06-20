@@ -14,6 +14,28 @@
     <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/vendor/wow.min.css">
     <link rel="stylesheet" href="assets/css/app.css">
+    <style>
+        .cart-button {
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #E85F3E;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 12px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        .toast-container {
+            z-index: 9999;
+        }
+    </style>
 </head>
 
 <body>
@@ -31,7 +53,7 @@
                     </div>
                     <div class="col-lg-4 col-md-6 col-sm-5 col-6">
                         <div class="text-start text-lg-center">
-                            <a href="index-2.html" class="header-logo">
+                            <a href="index.html" class="header-logo">
                                 <img src="assets/media/logo.png" alt="">
                             </a>
                         </div>
@@ -40,7 +62,7 @@
                     <div class="col-lg-4 col-md-6 col-6">
                         <div class="header-end">
                             <div class="header-buttons">
-                                <a href="#" class="button-block">
+                                <a href="login.html" id="accountLink" class="button-block">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18"
                                         fill="none">
                                         <path
@@ -50,15 +72,20 @@
                                             d="M15.6199 12.5928C14.3205 11.2734 12.598 10.5469 10.7695 10.5469H8.66016C6.83175 10.5469 5.10916 11.2734 3.80979 12.5928C2.51678 13.9057 1.80469 15.6387 1.80469 17.4727C1.80469 17.7639 2.0408 18 2.33203 18H17.0977C17.3889 18 17.625 17.7639 17.625 17.4727C17.625 15.6387 16.9129 13.9057 15.6199 12.5928ZM2.88258 16.9453C3.14678 13.954 5.63711 11.6016 8.66016 11.6016H10.7695C13.7926 11.6016 16.2829 13.954 16.5471 16.9453H2.88258Z"
                                             fill="#1E1F20" />
                                     </svg>
+                                    <span id="userNamePlaceholder">Login/Sign Up</span>
                                 </a>
-                                <a href="#" class="button-block cart-button">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18" viewBox="0 0 19 18"
-                                        fill="none">
-                                        <path
-                                            d="M17.4869 16.1063C17.0473 13.0299 15.9747 5.52124 15.9747 5.52124C15.9376 5.26112 15.7148 5.06792 15.452 5.06792H13.1524V3.33377C12.9831 -1.11295 6.60873 -1.10957 6.44108 3.33377V5.06792H4.14146C3.8787 5.06792 3.65596 5.26112 3.61879 5.52124C3.61879 5.52124 2.54624 13.0299 2.10657 16.1063C2.03846 16.5828 2.18032 17.0645 2.49566 17.428C2.81101 17.7915 3.26782 18 3.74899 18H15.8445C16.3257 18 16.7825 17.7915 17.0978 17.428C17.4132 17.0646 17.555 16.5828 17.4869 16.1063ZM7.49708 3.33377C7.61306 0.286388 11.9815 0.288675 12.0964 3.33377V5.06792H7.49708V3.33377ZM16.3002 16.736C16.1855 16.8682 16.0194 16.944 15.8445 16.944H3.74899C3.57405 16.944 3.40798 16.8682 3.29331 16.736C3.1787 16.6039 3.12717 16.4289 3.15191 16.2557C3.52664 13.6339 4.361 7.79284 4.5994 6.12389H6.44111V7.29249C6.46709 7.99228 7.47135 7.99175 7.49708 7.29249V6.12389H12.0964V7.29249C12.1224 7.99228 13.1267 7.99175 13.1524 7.29249V6.12389H14.9941C15.2325 7.79284 16.0669 13.6339 16.4416 16.2557C16.4663 16.4289 16.4148 16.6039 16.3002 16.736Z"
-                                            fill="#1E1F20" />
-                                    </svg>
-                                </a>
+                                <div class="cart-button-wrapper">
+                                    <a href="#" class="button-block cart-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18"
+                                            viewBox="0 0 19 18" fill="none">
+                                            <path
+                                                d="M17.4869 16.1063C17.0473 13.0299 15.9747 5.52124 15.9747 5.52124C15.9376 5.26112 15.7148 5.06792 15.452 5.06792H13.1524V3.33377C12.9831 -1.11295 6.60873 -1.10957 6.44108 3.33377V5.06792H4.14146C3.8787 5.06792 3.65596 5.26112 3.61879 5.52124C3.61879 5.52124 2.54624 13.0299 2.10657 16.1063C2.03846 16.5828 2.18032 17.0645 2.49566 17.428C2.81101 17.7915 3.26782 18 3.74899 18H15.8445C16.3257 18 16.7825 17.7915 17.0978 17.428C17.4132 17.0646 17.555 16.5828 17.4869 16.1063ZM7.49708 3.33377C7.61306 0.286388 11.9815 0.288675 12.0964 3.33377V5.06792H7.49708V3.33377ZM16.3002 16.736C16.1855 16.8682 16.0194 16.944 15.8445 16.944H3.74899C3.57405 16.944 3.40798 16.8682 3.29331 16.736C3.1787 16.6039 3.12717 16.4289 3.15191 16.2557C3.52664 13.6339 4.361 7.79284 4.5994 6.12389H6.44111V7.29249C6.46709 7.99228 7.47135 7.99175 7.49708 7.29249V6.12389H12.0964V7.29249C12.1224 7.99228 13.1267 7.99175 13.1524 7.29249V6.12389H14.9941C15.2325 7.79284 16.0669 13.6339 16.4416 16.2557C16.4663 16.4289 16.4148 16.6039 16.3002 16.736Z"
+                                                fill="#1E1F20" />
+                                        </svg>
+                                        <span class="cart-badge" id="cartTotal">0</span>
+                                    </a>
+                                </div>
+
 
                             </div>
 
@@ -130,65 +157,31 @@
                     <div class="row row-gap-4">
                         <div class="col-lg-6">
                             <div class="product-image-container bg-white">
+                                <!-- Product Images -->
                                 <div class="product-detail-slider slider-2">
-                                    <div class="detail-image">
-                                        <img src="https://m.media-amazon.com/images/I/61Lx+nFUrLL._AC_SL1500_.jpg"
-                                            alt="">
-                                    </div>
-                                    <div class="detail-image">
-                                        <img src="https://m.media-amazon.com/images/I/71OW3I0LEhL._AC_SL1500_.jpg"
-                                            alt="">
-                                    </div>
-                                    <div class="detail-image">
-                                        <img src="https://m.media-amazon.com/images/I/510Y+40yBaL._AC_.jpg" alt="">
-                                    </div>
-                                    <div class="detail-image">
-                                        <img src="https://m.media-amazon.com/images/I/516TSkqPMdL._AC_.jpg" alt="">
-                                    </div>
+
                                 </div>
                                 <div class="product-slider-asnav asnav-2">
-                                    <div class="nav-image">
-                                        <img src="https://m.media-amazon.com/images/I/61Lx+nFUrLL._AC_SL1500_.jpg"
-                                            alt="">
-                                    </div>
-                                    <div class="nav-image">
-                                        <img src="https://m.media-amazon.com/images/I/71OW3I0LEhL._AC_SL1500_.jpg"
-                                            alt="">
-                                    </div>
-                                    <div class="nav-image">
-                                        <img src="https://m.media-amazon.com/images/I/510Y+40yBaL._AC_.jpg" alt="">
-                                    </div>
-                                    <div class="nav-image">
-                                        <img src="https://m.media-amazon.com/images/I/516TSkqPMdL._AC_.jpg" alt="">
-                                    </div>
+
                                 </div>
                             </div>
+
                         </div>
                         <div class="col-lg-6">
                             <div class="product-text-container bg-white">
-                                <h3 class="medium-black fw-600 mb-12">Hardcover Notebook</h3>
+                                <h3 id="productName" class="medium-black fw-600 mb-12"></h3>
                                 <div class="rating-star mb-12">
                                     <h6 class="color-primary">★★★★★ &nbsp; <span
                                             class="dark-gray text-16 fw-400 font-primary text-decoration-underline">(27
                                             Reviews)</span></h6>
                                 </div>
                                 <div class="d-flex align-items-center gap-16 mb-16">
-                                    <h6 class="medium-black">GHS 30.00</h6>
-                                    <p class="text-decoration-line-through">GHS 50.00</p>
+                                    <h6 class="medium-black" id="price">GHS 30.00</h6>
+                                    <p class="text-decoration-line-through" id="salePrice">GHS 50.00</p>
                                 </div>
                                 <div class="hr-line line-2 mb-24"></div>
-                                <p class="quick-view-text mb-16">
-                                    Cultivate logical thinking, manual and brain use, cognitive ability, calculation
-                                    ability, etc. <br>
-                                    Lightweight, non-breakable and easy to carry, it can be easily carried in any
-                                    backpack or document bag. <br>
-                                    Made of selected beech wood, it has excellent toughness, hard and shiny texture,
-                                    rounded edges and very smooth polishing. <br>
-                                    The paint will not fall off, you can use it with confidence, Size:
-                                    15x3x15CM/5.9x1.18x5.9". <br>
-                                    Welcome to my shop. Small as the shop is, it is managed with care. Welcome, my
-                                    valued customer! No matter you have any questions, please contact me in time by
-                                    email. I will do my best to serve you and wish you a happy life!
+                                <p class="quick-view-text mb-16" id="shortDescription">
+
                                 </p>
                                 <div class="mb-24">
                                     <p class="medium-black mb-8">Quantity:</p>
@@ -216,14 +209,14 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="medium-black fw-500 mb-24">SKU: <span
-                                        class="light-gray fw-400">AK-251-KT</span></p>
+                                <p class="medium-black fw-500 mb-24">SKU: <span class="light-gray fw-400"
+                                        id="productCode">AK-251-KT</span></p>
                                 <div class="row row-gap-2 mb-24">
                                     <div class="col-sm-6">
-                                        <a href="cart.html" class="w-100 text-center cus-btn-2">
+                                        <button class="w-100 text-center cus-btn add-to-cart-btn">
                                             <span class="btn-text">Add to Cart</span>
                                             <span>Add to Cart</span>
-                                        </a>
+                                        </button>
                                     </div>
                                     <div class="col-sm-6">
                                         <a href="checkout.html" class="w-100 text-center cus-btn">
@@ -279,771 +272,23 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                </div>
-            </section>
-            <!-- PRODUCT DETAIL END -->
-    </div>
-    </section>
-    <!-- PRODUCT DETAIL END -->
-    <!-- Product Description Start -->
-    <section class="product-description py-40">
-        <div class="container-2">
-            <div class="description-wrapper">
-                <nav class="mb-32">
-                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                        <button class="nav-link" id="nav-desc-tab" data-bs-toggle="tab" data-bs-target="#nav-desc"
-                            type="button" role="tab" aria-controls="nav-desc" aria-selected="true">
-                            <span>
-                                Description
-                            </span>
-                        </button>
+                    <div class="product-detail-quick-view py-5">
+                        <h4 class="medium-black fw-600 mb-12">About This Item</h4>
+                        <!-- Underline -->
 
-                        <button class="nav-link show active" id="nav-review-tab" data-bs-toggle="tab"
-                            data-bs-target="#nav-review" type="button" role="tab" aria-controls="nav-review"
-                            aria-selected="false">
-                            <span>
-                                Reviews
-                            </span>
-                        </button>
-                    </div>
-                </nav>
-                <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade" id="nav-desc" role="tabpanel" aria-labelledby="nav-desc-tab">
-                        <h5 class="mb-16 fw-600 black">Description:</h5>
-                        <p class="mb-8">
-                            The product is a high-quality item designed to meet your needs. It is crafted with care and
-                            attention to detail, ensuring durability and performance.
+                        <p class="container-fluid mt-16 " id="longDescription">
+
                         </p>
-                        <p>Its made of durable materials, making it suitable for various uses.</p>
-                    </div>
-                    <div class="tab-pane fade show active" id="nav-review" role="tabpanel"
-                        aria-labelledby="nav-review-tab">
-                        <div class="comments-sec mb-48">
-                            <h5 class="mb-32 medium-black fw-600">(75) Reviews:</h5>
-                            <div class="comment-box mb-24">
-                                <img src="assets/media/user.png" alt="" class="br-4">
-                                <div class="block">
-                                    <div class="top-row mb-16">
-                                        <div class="info">
-                                            <h6 class="fw-600 medium-black">Akussung Kenneth</h6>
-                                        </div>
-                                        <div class="rating-star mb-12">
-                                            <p class="color-star">★★★★★</p>
-                                        </div>
-                                    </div>
-                                    <p>This is a great product! It has exceeded my expectations.</p>
-                                </div>
-                            </div>
-                            <div class="hr-line bg-light-gray mb-24"></div>
-                            <div class="comment-box mb-24">
-                                <img src="assets/media/testi.png" alt="" class="br-4">
-                                <div class="block">
-                                    <div class="top-row mb-16">
-                                        <div class="info">
-                                            <h6 class="fw-600 medium-black">Sarah Akanpaaba</h6>
-                                        </div>
-                                        <div class="rating-star mb-12">
-                                            <p class="color-star">★★★★★</p>
-                                        </div>
-                                    </div>
-                                    <p>This is a great product! It has exceeded my expectations.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="review-form">
-                            <h5 class="medium-black fw-600 mb-16">Write a Review</h5>
-                            <p class="mb-24">
-                                Your email address will not be published. Required fields are marked <span
-                                    class="text-danger">*</span>
-                            </p>
-                            <p class="mb-8">Your rating</p>
-                            <div class="star-rating mb-32">
-                                <input type="radio" id="1-star" name="rating" value="1">
-                                <label for="1-star" class="star">&#9733;</label>
-                                <input type="radio" id="2-stars" name="rating" value="2">
-                                <label for="2-stars" class="star">&#9733;</label>
-                                <input type="radio" id="3-stars" checked name="rating" value="3">
-                                <label for="3-stars" class="star">&#9733;</label>
-                                <input type="radio" id="4-stars" name="rating" value="4">
-                                <label for="4-stars" class="star">&#9733;</label>
-                                <input type="radio" id="5-stars" name="rating" value="5">
-                                <label for="5-stars" class="star">&#9733;</label>
-                            </div>
-                            <p class="medium-black fw-600 mb-16">Your Review</p>
-                            <form method="post" action="" class="form-group product-form">
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="input-block mb-24">
-                                            <textarea class="form-control" name="message" id="comment" rows="4"
-                                                placeholder="Write Your Review here..."></textarea>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="input-block mb-24">
-                                            <input type="text" class="form-control" id="name" name="name" required
-                                                placeholder="Your Name">
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <div class="input-block mb-24">
-                                            <input type="email" class="form-control" id="mail" name="email" required
-                                                placeholder="Your Email">
-                                        </div>
-                                    </div>
-                                    <div class="cus-checkBox mb-32">
-                                        <input type="checkbox" id="remember" checked>
-                                        <label for="remember">Save my name and email in this browser for the
-                                            next time I comment.</label>
-                                    </div>
-                                    <button type="submit" class="cus-btn">
-                                        <span class="btn-text">Submit</span>
-                                        <span>Submit</span>
-                                    </button>
-                                </div>
-                        </div>
-                        </form>
-                    </div>
-
-
-
-                </div>
-            </div>
-        </div>
-        </div>
-    </section>
-    <!-- Product Description End -->
-    <!-- RECOMMENDED PRODUCT START -->
-    <section class="featured-product-sec pt-40 pb-80">
-        <div class="container-2">
-            <div class="heading mb-48 text-center wow fadeInUp animated" data-wow-delay="400ms">
-                <h2 class="medium-black fw-700 mb-16">Recommended <span class="color-primary"> Products</span></h2>
-            </div>
-            <div class="featured-product-slider">
-                <div class="latest-product-card">
-                    <div class="image-box mb-16">
-                        <span class="sale-label subtitle fw-400 white">30%</span>
-                        <a href="product-detail.html" class="image"><img src="assets/media/products/furniture.jpg"
-                                class="product-image" alt=""></a>
-                        <div class="side-icons">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="wishlist.html">
-                                        <i class="fa-light fa-heart"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#productQuickView">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <a href="cart.html" class="cus-btn">
-                            <span class="btn-text">Add Cart</span>
-                            <span>Go to Cart</span>
-                        </a>
-                    </div>
-                    <div class="product-desc">
-                        <div>
-                            <a href="product-detail.html" class="product-title h6 fw-700 mb-8">Classic
-                                Indoor Kids Slide</a>
-                            <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-                                <div class="rating-stars">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                </div>
-                                <p class="fw-500">(54)</p>
-                            </div>
-                            <h5 class="medium-black fw-700">GHS 250</h5>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="latest-product-card">
-                    <div class="image-box mb-16">
-
-                        <a href="product-detail.html" class="image"><img src="assets/media/products/product-4.png"
-                                class="product-image" alt=""></a>
-                        <div class="side-icons">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="wishlist.html">
-                                        <i class="fa-light fa-heart"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#productQuickView">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <a href="cart.html" class="cus-btn">
-                            <span class="btn-text">Add Cart</span>
-                            <span>Go to Cart</span>
-                        </a>
-                    </div>
-                    <div class="product-desc">
-                        <div>
-                            <a href="product-detail.html" class="product-title h6 fw-700 mb-8">Classic
-                                Indoor Kids Slide</a>
-                            <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-                                <div class="rating-stars">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                </div>
-                                <p class="fw-500">(54)</p>
-                            </div>
-                            <h5 class="medium-black fw-700">GHS 250</h5>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="latest-product-card">
-                    <div class="image-box mb-16">
-                        <span class="sale-label subtitle fw-400 white">Sale</span>
-                        <a href="product-detail.html" class="image"><img src="assets/media/products/uniform.jpg"
-                                class="product-image" alt=""></a>
-                        <div class="side-icons">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="wishlist.html">
-                                        <i class="fa-light fa-heart"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#productQuickView">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <a href="cart.html" class="cus-btn">
-                            <span class="btn-text">Add Cart</span>
-                            <span>Go to Cart</span>
-                        </a>
-                    </div>
-                    <div class="product-desc">
-                        <div>
-                            <a href="product-detail.html" class="product-title h6 fw-700 mb-8">Classic
-                                Indoor Kids Slide</a>
-                            <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-                                <div class="rating-stars">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                </div>
-                                <p class="fw-500">(54)</p>
-                            </div>
-                            <h5 class="medium-black fw-700">GHS 250</h5>
-                        </div>
-                    </div>
-
-                </div>
-                <div class="latest-product-card">
-                    <div class="image-box mb-16">
-
-                        <a href="product-detail.html" class="image"><img
-                                src="assets/media/products/interactive-board.jpg" class="product-image" alt=""></a>
-                        <div class="side-icons">
-                            <ul class="list-unstyled">
-                                <li>
-                                    <a href="wishlist.html">
-                                        <i class="fa-light fa-heart"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#productQuickView">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </a>
-                                </li>
-
-                            </ul>
-                        </div>
-                        <a href="cart.html" class="cus-btn">
-                            <span class="btn-text">Add Cart</span>
-                            <span>Go to Cart</span>
-                        </a>
-                    </div>
-                    <div class="product-desc">
-                        <div>
-                            <a href="product-detail.html" class="product-title h6 fw-700 mb-8">Classic
-                                Indoor Kids Slide</a>
-                            <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-                                <div class="rating-stars">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13"
-                                        fill="none">
-                                        <path
-                                            d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z"
-                                            fill="#E85F3E" />
-                                    </svg>
-                                </div>
-                                <p class="fw-500">(54)</p>
-                            </div>
-                            <h5 class="medium-black fw-700">GHS 250</h5>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-    <!-- RECOMMENDED PRODUCT END -->
-    <!-- FOOTER START -->
-    <footer class="pt-40 pb-32 bg-dark white">
-        <div class="container-2">
-            <div class="row row-gap-3 mb-24">
-                <div class="col-xl-3 col-lg-4 col-md-10 col-sm-5 wow fadeInUp animated" data-wow-delay="400ms">
-                    <div class="footer-info-block">
-                        <a href="index-2.html" class="mb-24">
-                            <img src="assets/media/logo.png" alt="">
-                        </a>
-                        <p class="mb-24">Edu Ghana Shop is Your one-stop shop for quality school supplies – from
-                            uniforms and stationery to furniture and digital learning tools. Making education
-                            simple, fun, and accessible!</p>
-                        <div class="mb-1">
-                            <p class="medium-black fw-500 white"><i class="fa fa-envelope"> </i> <a
-                                    href="mailto:sales@edu-gh.net" class="fw-400 ">
-                                    sales@edu-gh.net</a></p>
-                        </div>
-                        <div class="mb-1">
-                            <p class="medium-black fw-500 white"><i class="fa fa-phone"></i> <a href="tel:1235498"
-                                    class="fw-400"> (+233) 202 202020</a></p>
-                        </div>
-                        <div class="mb-24">
-                            <p class="medium-black fw-500"><i class="fa fa-location-dot text-danger"></i> <span
-                                    class="fw-400 white"> P.O Box xxx Accra</span></p>
-                        </div>
-                        <ul class="list-unstyled social-link">
-                            <li>
-                                <a href="#" class="blog-icons">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                                        <path fill="#ffffff"
-                                            d="M512 256C512 114.6 397.4 0 256 0S0 114.6 0 256C0 376 82.7 476.8 194.2 504.5V334.2H141.4V256h52.8V222.3c0-87.1 39.4-127.5 125-127.5c16.2 0 44.2 3.2 55.7 6.4V172c-6-.6-16.5-1-29.6-1c-42 0-58.2 15.9-58.2 57.2V256h83.6l-14.4 78.2H287V510.1C413.8 494.8 512 386.9 512 256h0z" />
-                                    </svg>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="blog-icons">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                        <path
-                                            d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zm297.1 84L257.3 234.6 379.4 396H283.8L209 298.1 123.3 396H75.8l111-126.9L69.7 116h98l67.7 89.5L313.6 116h47.5zM323.3 367.6L153.4 142.9H125.1L296.9 367.6h26.3z" />
-                                    </svg>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="blog-icons">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                                        <path
-                                            d="M448 209.9a210.1 210.1 0 0 1 -122.8-39.3V349.4A162.6 162.6 0 1 1 185 188.3V278.2a74.6 74.6 0 1 0 52.2 71.2V0l88 0a121.2 121.2 0 0 0 1.9 22.2h0A122.2 122.2 0 0 0 381 102.4a121.4 121.4 0 0 0 67 20.1z" />
-                                    </svg>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#" class="blog-icons">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 448 512"><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
-                                        <path
-                                            d="M194.4 211.7a53.3 53.3 0 1 0 59.3 88.7 53.3 53.3 0 1 0 -59.3-88.7zm142.3-68.4c-5.2-5.2-11.5-9.3-18.4-12c-18.1-7.1-57.6-6.8-83.1-6.5c-4.1 0-7.9 .1-11.2 .1c-3.3 0-7.2 0-11.4-.1c-25.5-.3-64.8-.7-82.9 6.5c-6.9 2.7-13.1 6.8-18.4 12s-9.3 11.5-12 18.4c-7.1 18.1-6.7 57.7-6.5 83.2c0 4.1 .1 7.9 .1 11.1s0 7-.1 11.1c-.2 25.5-.6 65.1 6.5 83.2c2.7 6.9 6.8 13.1 12 18.4s11.5 9.3 18.4 12c18.1 7.1 57.6 6.8 83.1 6.5c4.1 0 7.9-.1 11.2-.1c3.3 0 7.2 0 11.4 .1c25.5 .3 64.8 .7 82.9-6.5c6.9-2.7 13.1-6.8 18.4-12s9.3-11.5 12-18.4c7.2-18 6.8-57.4 6.5-83c0-4.2-.1-8.1-.1-11.4s0-7.1 .1-11.4c.3-25.5 .7-64.9-6.5-83l0 0c-2.7-6.9-6.8-13.1-12-18.4zm-67.1 44.5A82 82 0 1 1 178.4 324.2a82 82 0 1 1 91.1-136.4zm29.2-1.3c-3.1-2.1-5.6-5.1-7.1-8.6s-1.8-7.3-1.1-11.1s2.6-7.1 5.2-9.8s6.1-4.5 9.8-5.2s7.6-.4 11.1 1.1s6.5 3.9 8.6 7s3.2 6.8 3.2 10.6c0 2.5-.5 5-1.4 7.3s-2.4 4.4-4.1 6.2s-3.9 3.2-6.2 4.2s-4.8 1.5-7.3 1.5l0 0c-3.8 0-7.5-1.1-10.6-3.2zM448 96c0-35.3-28.7-64-64-64H64C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96zM357 389c-18.7 18.7-41.4 24.6-67 25.9c-26.4 1.5-105.6 1.5-132 0c-25.6-1.3-48.3-7.2-67-25.9s-24.6-41.4-25.8-67c-1.5-26.4-1.5-105.6 0-132c1.3-25.6 7.1-48.3 25.8-67s41.5-24.6 67-25.8c26.4-1.5 105.6-1.5 132 0c25.6 1.3 48.3 7.1 67 25.8s24.6 41.4 25.8 67c1.5 26.3 1.5 105.4 0 131.9c-1.3 25.6-7.1 48.3-25.8 67z" />
-                                    </svg>
-                                </a>
-                            </li>
-                        </ul>
                     </div>
                 </div>
-                <div class="offset-xl-1 col-lg-2 col-md-3 col-sm-4 col-6 wow fadeInUp animated" data-wow-delay="500ms">
-                    <h6 class="medium-black fw-700 mb-24 white"> Our Company</h6>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-8">
-                            <a href="index-2.html">Home</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="about.html">About Us</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="blog-grid.html">Blog List</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="about.html">About Us</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="contact.html">Our Store</a>
-                        </li>
-                        <li>
-                            <a href="contact.html">Sitemap</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-2 col-md-3 col-sm-3 col-6 wow fadeInUp animated" data-wow-delay="600ms">
-                    <h6 class="medium-black fw-700 mb-24 white">Customer Service</h6>
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-8">
-                            <a href="contact.html">Shop</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="contact.html">Sign in</a>
-                        </li>
-
-                        <li class="mb-8">
-                            <a href="wishlist.html">My Wishlist</a>
-                        </li>
-                        <li class="mb-8">
-                            <a href="checkout.html">Track My Order</a>
-                        </li>
-                        <li>
-                            <a href="contact.html">Help</a>
-                        </li>
-                        <li>
-                            <a href="contact.html">FAQ</a>
-                        </li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-6 col-sm-7 wow fadeInUp animated" data-wow-delay="700ms">
-                    <h6 class="medium-black fw-700 mb-24">Sign Up To Newsletter</h6>
-                    <p class="mb-24">Sign up for exclusive updates, new arrivals & insider only <br
-                            class="d-xxl-block d-none"> discounts</p>
-                    <form action="#" method="post" class="newsletter-container mb-24">
-                        <div class="newsletter-block">
-                            <input type="text" name="newsletter-email" placeholder="Enter Your Email">
-                        </div>
-                        <button type="submit" class="cus-btn">
-                            <span class="btn-text">Subscribe</span>
-                            <span>Subscribe</span>
-                        </button>
-                    </form>
-                </div>
-            </div>
-            <div class="footer-bottom-bar d-flex align-items-end flex-wrap row-gap-2 justify-content-between wow fadeInUp animated"
-                data-wow-delay="800ms">
-                <p class="dark-gray white">@2025 All Rights Copyright <a href="#" class="color-primary fw-600">
-                        Edu Ghana.</a>
-                    Designed &amp; Developed By <span class="color-primary fw-600">Softnage</span></p>
-                <div class="payment-cards d-flex align-items-center gap-16">
-                    <div class="card-block">
-                        <img src="assets/media/icons/mtn.webp" alt="">
-                    </div>
-                    <div class="card-block">
-                        <img src="assets/media/icons/airteltigo.webp" alt="">
-                    </div>
-                    <div class="card-block">
-                        <img src="assets/media/icons/voda.webp" alt="">
-                    </div>
-                    <div class="card-block">
-                        <img src="assets/media/icons/card-1.png" alt="">
-                    </div>
-                    <div class=" card-block">
-                        <img src="assets/media/icons/card-4.png" alt="">
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-    </footer>
-    <!-- FOOTER END -->
-    </main>
-    <!-- Main Sections end-->
     </div>
-    <!-- Main Wrapper end -->
-    <!-- Back To Top Start -->
-    <a href="#main-wrapper" id="backto-top" class="back-to-top"><i class="fas fa-angle-up"></i></a>
-    <!-- Mobile Menu Start -->
-    <div class="mobile-nav__wrapper">
-        <div class="mobile-nav__overlay mobile-nav__toggler"></div>
-        <div class="mobile-nav__content">
-            <span class="mobile-nav__close mobile-nav__toggler"><i class="fa fa-times"></i></span>
-            <div class="logo-box">
-                <a href="index.html" aria-label="logo image"><img src="assets/media/logo.png" alt=""></a>
-            </div>
-            <div class="mobile-nav__container"></div>
-            <ul class="mobile-nav__contact list-unstyled">
-                <li>
-                    <i class="fas fa-envelope"></i>
-                    <a href="mailto:example@company.com">info@edu-net.com</a>
-                </li>
-                <li>
-                    <i class="fa fa-phone-alt"></i>
-                    <a href="tel:+12345678">+233 (202) -202020</a>
-                </li>
-            </ul>
-            <div class="mobile-nav__social">
-                <a href="#"><i class="fa-brands fa-x-twitter"></i></a>
-                <a href="#"><i class="fab fa-facebook"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-            </div>
-        </div>
     </div>
-    <!-- Mobile Menu End -->
-    <!-- Shopping Cart Popup Start -->
-    <aside id="sidebar-cart">
-        <div class="title-cart-block mb-32 bg-lightest-gray">
-            <h6 class="fw-500 black">Shopping Cart (2)</h6>
-            <a href="#" class="close-button close-popup"><span class="close-icon">X</span></a>
-        </div>
-        <ul class="product-list p-24">
-            <li class="product-item mb-24">
-                <div class="d-flex align-items-center gap-12">
-                    <div class="item-image">
-                        <img src="assets/media/products/abacus.jpg" alt="Product Photo">
-                    </div>
-                    <div class="prod-title">
-                        <a href="#" class="h6 medium-black font-sec fw-700 mb-8">Abical Plasctic Abacus 15 Digits
-                            Arithmetic Tool</a>
-                        <p class="subtitle mb-4p">Quantity: 5</p>
-                        <p class="subtitle">GHS 30.00</p>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <a href="javascript:;" class="cancel mb-12">
-                        <i class="fa fa-trash text-danger"></i>
-                    </a>
-                    <div class="quantity quantity-wrap">
-                        <div class="input-area quantity-wrap">
-                            <input class="decrement" type="button" value="-">
-                            <input type="text" name="quantity" value="1" maxlength="2" size="1" class="number">
-                            <input class="increment" type="button" value="+">
-                        </div>
-                    </div>
-                </div>
-            </li>
-            <li class="product-item mb-24">
-                <div class="d-flex align-items-center gap-12">
-                    <div class="item-image">
-                        <img src="assets/media/products/interactive-board.jpg" alt="Product Photo">
-                    </div>
-                    <div class="prod-title">
-                        <a href="#" class="h6 medium-black font-sec fw-700 mb-8">Interactive White Board</a>
-                        <p class="subtitle mb-4p">Quantity: 5</p>
-                        <p class="subtitle">GHS 1500.00</p>
-                    </div>
-                </div>
-                <div class="text-end">
-                    <a href="javascript:;" class="cancel mb-12">
-                        <i class="fa fa-trash text-danger"></i>
-                    </a>
-                    <div class="quantity quantity-wrap">
-                        <div class="input-area quantity-wrap">
-                            <input class="decrement" type="button" value="-">
-                            <input type="text" name="quantity" value="1" maxlength="2" size="1" class="number">
-                            <input class="increment" type="button" value="+">
-                        </div>
-                    </div>
-                </div>
-            </li>
-        </ul>
-        <div class="price-total p-24">
-            <span class="h6 fw-700 medium-black">SUBTOTAL</span>
-            <span class="h6 fw-700 medium-black">GHS 1,5030.00</span>
-        </div>
-        <div class="hr-line mb-24"></div>
-        <div class="row p-24">
-            <div class="col-lg-6">
-                <a href="cart.html" class="cus-btn w-100 text-center">
-                    <span class="btn-text">Add to Cart <i class="fa fa-cart-shopping"></i></span>
-                    <span>Go to Cart</span>
-                </a>
-            </div>
-            <div class="col-lg-6">
-                <a href="checkout.html" class="cus-btn-2 btn-sec w-100 text-center">
-                    <span class="btn-text">Checkout <i class="fa fa-credit-card"></i></span>
-                    <span>Go to Checkout</span>
-                </a>
-            </div>
-        </div>
-    </aside>
-    <div id="sidebar-cart-curtain" class="close-popup"></div>
-
-    <!-- Shopping Cart Popup End -->
-    <!-- Modal -->
-    <div class="modal fade" id="productQuickView" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-        aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="shop-detail">
-                        <div class="detail-wrapper">
-                            <div class="row row-gap-4">
-                                <div class="col-lg-6">
-                                    <div class="quick-image-box">
-                                        <img src="assets/media/products/abacus.jpg" alt="">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="product-text-container bg-white br-20">
-                                        <div class="close-content text-end">
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <h4 class="medium-black fw-700 mb-16">Abicial Plastic
-                                            Abacus 15 Digits Arithmetic Tool </h4>
-                                        <div class="d-flex align-items-center flex-wrap gap-8 mb-16">
-                                            <h6 class="color-star">★★★★★</h6>
-                                            <p class="dark-gray subtitle">(78 Customer Reviews) </p>
-                                        </div>
-                                        <div class="d-flex align-items-center justify-content-between mb-24">
-                                            <div class="d-flex align-items-center gap-16">
-                                                <h5 class="fw-600 color-primary">GHS 30</h5>
-                                                <p class="fw-500 text-decoration-line-through">GHS 55</p>
-                                            </div>
-                                        </div>
-                                        <p class="mb-24">
-                                            The Clean Wave Washing Machine Automatic Washing Machine is engineered to
-                                            make laundry effortless with its advanced
-                                            cleaning technology. Featuring multiple wash cycles, water level sensors,
-                                            and a quiet motor...
-                                        </p>
-                                        <p class="subtitle color-primary mb-24">40 in stock, ready to ship</p>
-                                        <div class="function-bar mb-24">
-                                            <div class="quantity quantity-wrap">
-                                                <div class="input-area quantity-wrap">
-                                                    <input class="decrement" type="button" value="-">
-                                                    <input type="text" name="quantity" value="1" maxlength="2" size="1"
-                                                        class="number">
-                                                    <input class="increment" type="button" value="+">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-12 mb-24">
-                                            <p class="fw-600 medium-black">Subtotal:</p>
-                                            <p>GHS 90</p>
-                                        </div>
-                                        <div class="row mb-24 row-gap-2">
-                                            <div class="col-md-6">
-                                                <a href="cart.html" class="cus-btn w-100 text-center">
-                                                    <span class="btn-text">Add to Cart</span>
-                                                    <span>Go to Cart</span>
-                                                </a>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <a href="checkout.html" class="cus-btn-2 btn-sec w-100 text-center">
-                                                    <span class="btn-text">Buy it Now</span>
-                                                    <span>Go to Checkout</span>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
     <!-- Modal -->
-
+    <script type="module" src="assets/js/authentication.js"></script>
+    <script type="module" src="assets/js/product-detail.js"></script>
     <!-- Jquery Js -->
     <script src="assets/js/vendor/bootstrap.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.3.min.js"></script>

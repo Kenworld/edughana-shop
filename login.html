@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/media/favicon.png">
+    <!-- All CSS files -->
+    <link rel="stylesheet" href="assets/css/vendor/font-awesome.css">
+    <link rel="stylesheet" href="assets/css/vendor/slick-theme.css">
+    <link rel="stylesheet" href="assets/css/vendor/slick-slider.css">
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/vendor/wow.min.css">
+    <title>Login - Edu Ghana</title>
+    <style>
+        .loaderContainer {
+            display: flex;
+            justify-content: center;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            position: relative;
+            animation: rotate 1s linear infinite;
+
+        }
+
+        .loader::before,
+        .loader::after {
+            content: "";
+            box-sizing: border-box;
+            position: absolute;
+            inset: 0px;
+            border-radius: 50%;
+            border: 5px solid #FFF;
+            animation: prixClipFix 2s linear infinite;
+        }
+
+        .loader::after {
+            inset: 8px;
+            transform: rotate3d(90, 90, 0, 180deg);
+            border-color: #FF3D00;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg)
+            }
+
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes prixClipFix {
+            0% {
+                clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+            }
+
+            50% {
+                clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+            }
+
+            75%,
+            100% {
+                clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+            }
+        }
+
+        .auth-wrapper {
+            min-height: 100vh;
+            background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+                url('assets/media/banner/auth_bg.jpg') center/cover;
+        }
+
+        .auth-card {
+            max-width: 450px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .social-login-btn {
+            border: 1px solid #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .social-login-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: #6c757d;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .divider span {
+            padding: 0 10px;
+        }
+
+        .cus-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: #fff;
+            color: #5f6368;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        .cus-btn:hover {
+            background-color: #f8f9fa;
+            border-color: #c6c6c6;
+        }
+
+        .cus-btn img {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="auth-wrapper d-flex align-items-center justify-content-center py-5">
+        <div class="container">
+            <div class="auth-card mx-auto bg-white p-4 p-sm-5">
+                <!-- Logo -->
+                <div class="text-center mb-4">
+                    <a href="index.html"> <img src="assets/media/logo.png" alt="Edu Ghana" class="img-fluid"
+                            style="max-width: 180px;"></a>
+                </div>
+
+                <h4 class="text-center mb-2">Welcome Back!</h4>
+                <p class="text-center text-muted mb-4">Please login to your account</p>
+
+                <!-- Social Login Buttons -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-12">
+                        <button class="cus-btn">
+                            <img src="assets/media/icons/google" alt="Google Logo">
+                            <span class="btn-text" id="googleLogin">Sign in with Google</span>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Divider -->
+                <div class="divider mb-4">
+                    <span>or</span>
+                </div>
+
+                <!-- Login Form -->
+                <form class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" required>
+                        <div class="invalid-feedback">Please enter a valid email address</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" required>
+                        <div class="invalid-feedback">Please enter your password</div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-4">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="remember">
+                            <label class="form-check-label" for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="text-decoration-none color-primary">Forgot Password?</a>
+                    </div>
+
+                    <button type="button" id="loginBtn" class="cus-btn w-100 mb-4">
+                        <span class="btn-text">Login</span>
+                        <span>Login</span>
+                    </button>
+
+                    <p class="text-center mb-0">
+                        Don't have an account?
+                        <a href="signup.html" class="text-decoration-none color-primary">Sign Up</a>
+                    </p>
+                </form>
+                <div class="loaderContainer">
+                    <span class="loader" id="loader"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./assets/js/authentication.js"></script>
+</body>
+
+</html>
