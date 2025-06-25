@@ -155,7 +155,7 @@
                     <!-- Cart Table -->
                     <div class="row mb-4">
                         <div class="table-responsive mb-4 col-lg-8">
-                            <table class="table align-middle">
+                            <table class="table align-middle" id="cartTable">
                                 <thead class="bg-light">
                                     <tr>
                                         <th scope="col" class="py-3 ps-4">Product</th>
@@ -202,41 +202,7 @@
                                         </td>
                                     </tr>
 
-                                    <!-- Cart Item 2 -->
-                                    <tr>
-                                        <td class="py-3 ps-4">
-                                            <div class="d-flex align-items-center gap-3">
-                                                <img src="assets/media/products/interactive-board.jpg" alt="Product"
-                                                    class="rounded"
-                                                    style="width: 80px; height: 80px; object-fit: cover;">
-                                                <div>
-                                                    <h6 class="mb-1">Interactive White Board</h6>
-                                                    <p class="text-muted mb-0">Digital Learning Tool</p>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-3">
-                                            <div class="fw-semibold color-primary">GHS 1,500.00</div>
-                                        </td>
-                                        <td class="py-3">
-                                            <div class="quantity quantity-wrap" style="max-width: 120px;">
-                                                <div class="input-area quantity-wrap">
-                                                    <input class="decrement" type="button" value="-">
-                                                    <input type="text" name="quantity" value="2" maxlength="2" size="1"
-                                                        class="number">
-                                                    <input class="increment" type="button" value="+">
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="py-3">
-                                            <div class="fw-semibold color-primary">GHS 3,000.00</div>
-                                        </td>
-                                        <td class="py-3 pe-4">
-                                            <button class="btn btn-link text-danger">
-                                                <i class="fa fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
+
                                 </tbody>
                             </table>
                             <div class="col-md-6 text-md-start">
@@ -246,22 +212,23 @@
                                 </button>
                             </div>
                         </div>
+                        <!-- Cart Summary -->
                         <div class="col-lg-4 ms-auto">
                             <div class="card">
                                 <div class="card-body">
                                     <h5 class="card-title mb-4">Cart Totals</h5>
                                     <div class="d-flex justify-content-between mb-3">
                                         <span>Subtotal</span>
-                                        <span class="fw-semibold">GHS 3,030.00</span>
+                                        <span class="fw-semibold cart-summary-subtotal">GHS 0.00</span>
                                     </div>
                                     <div class="d-flex justify-content-between mb-3">
                                         <span>Shipping</span>
-                                        <span class="fw-semibold">GHS 20.00</span>
+                                        <span class="fw-semibold cart-summary-shipping">GHS 0.00</span>
                                     </div>
                                     <hr>
                                     <div class="d-flex justify-content-between mb-4">
                                         <span class="fw-bold">Total</span>
-                                        <span class="fw-bold color-primary">GHS 3,050.00</span>
+                                        <span class="fw-bold color-primary cart-summary-total">GHS 0.00</span>
                                     </div>
                                     <a href="checkout.html" class="cus-btn w-100 text-center">
                                         <span class="btn-text">Proceed to Checkout</span>
@@ -631,6 +598,106 @@
         </div>
     </div>
     <!-- Modal -->
+    <script type="module">
+        import { getCart, updateCartQuantity, removeFromCart, formatPrice, calculateCartTotal } from './assets/js/cart.js';
+
+        function renderCartTable() {
+            const cart = getCart();
+            const tbody = document.querySelector('#cartTable tbody');
+            if (!tbody) return;
+
+            if (cart.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-5">Your cart is empty.</td></tr>`;
+                updateCartSummary();
+                return;
+            }
+
+            tbody.innerHTML = cart.map(item => `
+            <tr data-product-id="${item.id}">
+                <td class="py-3 ps-4">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="${item.featuredImage}" alt="${item.name}" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
+                        <div>
+                            <h6 class="mb-1">${item.name}</h6>
+                        </div>
+                    </div>
+                </td>
+                <td class="py-3">
+                    <div class="fw-semibold color-primary">${formatPrice(item.salePrice && item.salePrice < item.price ? item.salePrice : item.price)}</div>
+                </td>
+                <td class="py-3">
+                    <div class="quantity quantity-wrap" style="max-width: 120px;">
+                        <div class="input-area quantity-wrap">
+                            <input class="decrement" type="button" value="-">
+                            <input type="text" name="quantity" value="${item.quantity}" maxlength="2" size="1" class="number">
+                            <input class="increment" type="button" value="+">
+                        </div>
+                    </div>
+                </td>
+                <td class="py-3">
+                    <div class="fw-semibold color-primary">${formatPrice((item.salePrice && item.salePrice < item.price ? item.salePrice : item.price) * item.quantity)}</div>
+                </td>
+                <td class="py-3 pe-4">
+                    <button class="btn btn-link text-danger remove-item">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>
+        `).join('');
+
+            // Add event listeners for quantity and remove
+            tbody.querySelectorAll('tr').forEach(row => {
+                const productId = row.dataset.productId;
+                const decrement = row.querySelector('.decrement');
+                const increment = row.querySelector('.increment');
+                const quantityInput = row.querySelector('.number');
+                const removeBtn = row.querySelector('.remove-item');
+
+                decrement.onclick = () => {
+                    let qty = parseInt(quantityInput.value) || 1;
+                    if (qty > 1) {
+                        updateCartQuantity(productId, qty - 1);
+                        renderCartTable();
+                    }
+                };
+                increment.onclick = () => {
+                    let qty = parseInt(quantityInput.value) || 1;
+                    updateCartQuantity(productId, qty + 1);
+                    renderCartTable();
+                };
+                quantityInput.onchange = () => {
+                    let qty = parseInt(quantityInput.value) || 1;
+                    updateCartQuantity(productId, qty);
+                    renderCartTable();
+                };
+                removeBtn.onclick = () => {
+                    removeFromCart(productId);
+                    renderCartTable();
+                };
+            });
+
+            updateCartSummary();
+        }
+
+        function updateCartSummary() {
+            const cart = getCart();
+            const subtotal = calculateCartTotal(cart);
+            // You can set shipping as a fixed value or calculate as needed
+            const shipping = cart.length > 0 ? 20 : 0;
+            const total = subtotal + shipping;
+
+            // Update summary elements (adjust selectors as needed)
+            const subtotalEl = document.querySelector('.cart-summary-subtotal');
+            const shippingEl = document.querySelector('.cart-summary-shipping');
+            const totalEl = document.querySelector('.cart-summary-total');
+
+            if (subtotalEl) subtotalEl.textContent = formatPrice(subtotal);
+            if (shippingEl) shippingEl.textContent = formatPrice(shipping);
+            if (totalEl) totalEl.textContent = formatPrice(total);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderCartTable);
+    </script>
     <script type="module" src="assets/js/authentication.js"></script>
     <!-- Jquery Js -->
     <script src="assets/js/vendor/bootstrap.min.js"></script>

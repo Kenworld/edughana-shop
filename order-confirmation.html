@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu Ghana - Order Confirmation</title>
+    <link rel="stylesheet" href="assets/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/app.css">
+    <style>
+        .confirmation-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .success-icon {
+            font-size: 5rem;
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="confirmation-container">
+            <div class="success-icon mb-4">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h1 class="mb-3">Thank You for Your Order!</h1>
+            <p class="text-muted mb-4">Your order has been placed successfully. We've sent a confirmation to your email
+                address.
+            </p>
+            <p><strong>Order ID:</strong> <span id="orderId"></span></p>
+
+            <a href="shop.html" class="cus-btn mt-4">
+                <span class="btn-text">Continue Shopping</span>
+                <span>Continue Shopping</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Font Awesome for the icon -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // A real implementation would fetch the order ID from the URL or storage
+            // For now, we'll just show a placeholder
+            const orderIdSpan = document.getElementById('orderId');
+            if (orderIdSpan) {
+                orderIdSpan.textContent = 'loading...'; // Placeholder
+                // In a real app, you might pass the order ID in the URL, e.g., order-confirmation.html?id=XYZ
+                const urlParams = new URLSearchParams(window.location.search);
+                const orderId = urlParams.get('id');
+                if (orderId) {
+                    orderIdSpan.textContent = orderId;
+                } else {
+                    orderIdSpan.textContent = "Not Available";
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
