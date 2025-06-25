@@ -252,3 +252,5 @@ if (
     }
   });
 }
+
+export { auth, db };

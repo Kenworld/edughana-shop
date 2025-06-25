@@ -107,45 +107,74 @@ function createProductCard(product) {
 // Function to create quick view modal HTML
 function createQuickViewModal() {
   const modalHTML = `
-    <div class="modal fade" id="productQuickView" tabindex="-1" aria-labelledby="productQuickViewLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="productQuickViewLabel">Product Quick View</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="quick-view-image">
-                  <img src="" alt="" class="img-fluid" id="quickViewImage">
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="quick-view-details">
-                  <h3 class="product-title mb-3" id="quickViewTitle"></h3>
-                  <div class="price mb-3">
-                    <span class="current-price" id="quickViewPrice"></span>
-                    <span class="old-price" id="quickViewSalePrice"></span>
-                  </div>
-                  <div class="description mb-4" id="quickViewDescription"></div>
-                  <div class="quantity mb-4">
-                    <label class="form-label">Quantity:</label>
-                    <div class="quantity-input">
-                      <button class="quantity-btn minus">-</button>
-                      <input type="number" class="form-control" value="1" min="1" id="quickViewQuantity">
-                      <button class="quantity-btn plus">+</button>
+    <div class="modal fade" id="productQuickView" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true" hidden>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="shop-detail">
+                        <div class="detail-wrapper">
+                            <div class="row row-gap-4">
+                                <div class="col-lg-6">
+                                    <div class="quick-image-box">
+                                        <img src="" alt="" id="quickViewImage">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="product-text-container bg-white br-20">
+                                        <div class="close-content text-end">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <h4 class="medium-black fw-700 mb-16" id="quickViewTitle"></h4>
+                                        <div class="d-flex align-items-center flex-wrap gap-8 mb-16">
+                                            <h6 class="color-star" id="quickViewRating">★★★★★</h6>
+                                            <p class="dark-gray subtitle" id="quickViewReviews"></p>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mb-24">
+                                            <div class="d-flex align-items-center gap-16">
+                                                <h5 class="fw-600 color-primary" id="quickViewPrice"></h5>
+                                                <p class="fw-500 text-decoration-line-through" id="quickViewSalePrice"></p>
+                                            </div>
+                                        </div>
+                                        <p class="mb-24" id="quickViewDescription"></p>
+                                        <p class="subtitle color-primary mb-24" id="quickViewStock"></p>
+                                        <div class="function-bar mb-24">
+                                            <div class="quantity quantity-wrap">
+                                                <div class="input-area quantity-wrap">
+                                                    <input class="decrement quantity-btn minus" type="button" value="-">
+                                                    <input type="text" name="quantity" value="1" maxlength="2" size="1"
+                                                        class="number" id="quickViewQuantity">
+                                                    <input class="increment quantity-btn plus" type="button" value="+">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-12 mb-24">
+                                            <p class="fw-600 medium-black">Subtotal:</p>
+                                            <p id="quickViewSubtotal"></p>
+                                        </div>
+                                        <div class="row mb-24 row-gap-2">
+                                            <div class="col-md-6">
+                                                <button class="cus-btn w-100 text-center add-to-cart-quick-view" id="quickViewAddToCart">
+                                                    <span class="btn-text">Add to Cart</span>
+                                                    <span>Go to Cart</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="checkout.html" class="cus-btn-2 btn-sec w-100 text-center">
+                                                    <span class="btn-text">Buy it Now</span>
+                                                    <span>Go to Checkout</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                  <button class="btn btn-primary add-to-cart-quick-view" id="quickViewAddToCart">
-                    Add to Cart
-                  </button>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
     </div>
   `;
 
@@ -155,12 +184,29 @@ function createQuickViewModal() {
   }
 }
 
+// Function to create rating stars HTML
+function createRatingStars() {
+  return Array(5)
+    .fill()
+    .map(
+      () => `
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" fill="none">
+      <path d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z" fill="#E85F3E"/>
+    </svg>
+  `
+    )
+    .join("");
+}
+
 // Function to update quick view modal with product details
 function updateQuickView(product) {
   const modal = document.getElementById("productQuickView");
   if (!modal) return;
 
   const hasSale = product.salePrice && product.salePrice < product.price;
+
+  // Update modal title
+  //document.getElementById("productQuickViewLabel").textContent = product.name;
 
   // Update modal content
   document.getElementById("quickViewImage").src = product.featuredImage;
@@ -169,6 +215,18 @@ function updateQuickView(product) {
   document.getElementById("quickViewPrice").textContent = formatPrice(
     hasSale ? product.salePrice : product.price
   );
+
+  // Update rating stars
+  const ratingElement = document.getElementById("quickViewRating");
+  if (ratingElement) {
+    ratingElement.innerHTML = createRatingStars();
+  }
+
+  // Update review count
+  const reviewsElement = document.getElementById("quickViewReviews");
+  if (reviewsElement) {
+    reviewsElement.textContent = `(${product.reviews?.length || 0})`;
+  }
 
   const salePriceElement = document.getElementById("quickViewSalePrice");
   if (hasSale) {
@@ -184,10 +242,20 @@ function updateQuickView(product) {
   document.getElementById("quickViewDescription").innerHTML =
     product.shortDescription || "No description available";
 
+  // Reset quantity to 1
+  const quantityInput = document.getElementById("quickViewQuantity");
+  if (quantityInput) {
+    quantityInput.value = 1;
+  }
+
   // Add event listener for add to cart button
   const addToCartBtn = document.getElementById("quickViewAddToCart");
   if (addToCartBtn) {
-    addToCartBtn.onclick = () => {
+    // Remove any existing event listeners
+    const newAddToCartBtn = addToCartBtn.cloneNode(true);
+    addToCartBtn.parentNode.replaceChild(newAddToCartBtn, addToCartBtn);
+
+    newAddToCartBtn.onclick = () => {
       const quantity =
         parseInt(document.getElementById("quickViewQuantity").value) || 1;
       addToCart(product, quantity);
@@ -202,19 +270,24 @@ function updateQuickView(product) {
   }
 
   // Add event listeners for quantity buttons
-  const quantityInput = document.getElementById("quickViewQuantity");
   const minusBtn = modal.querySelector(".quantity-btn.minus");
   const plusBtn = modal.querySelector(".quantity-btn.plus");
 
   if (minusBtn && plusBtn && quantityInput) {
-    minusBtn.onclick = () => {
+    // Remove any existing event listeners
+    const newMinusBtn = minusBtn.cloneNode(true);
+    const newPlusBtn = plusBtn.cloneNode(true);
+    minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
+    plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
+
+    newMinusBtn.onclick = () => {
       const currentValue = parseInt(quantityInput.value) || 1;
       if (currentValue > 1) {
         quantityInput.value = currentValue - 1;
       }
     };
 
-    plusBtn.onclick = () => {
+    newPlusBtn.onclick = () => {
       const currentValue = parseInt(quantityInput.value) || 1;
       quantityInput.value = currentValue + 1;
     };

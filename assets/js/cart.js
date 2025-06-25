@@ -1,5 +1,5 @@
-// Cart utility functions
-const CART_STORAGE_KEY = "edughana_cart";
+// Cart functions for localStorage management and UI updates
+const CART_STORAGE_KEY = "edugh_cart";
 
 // Get cart from localStorage
 export function getCart() {
@@ -10,114 +10,244 @@ export function getCart() {
 // Save cart to localStorage
 export function saveCart(cart) {
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+  updateCartUI();
 }
 
-// Add item to cart
+// Add product to cart
 export function addToCart(product, quantity = 1) {
   const cart = getCart();
-  const existingItemIndex = cart.findIndex((item) => item.id === product.id);
+  const existingItem = cart.find((item) => item.id === product.id);
 
-  if (existingItemIndex > -1) {
-    // Update quantity if item exists
-    cart[existingItemIndex].quantity += quantity;
+  if (existingItem) {
+    existingItem.quantity += quantity;
   } else {
-    // Add new item
     cart.push({
       id: product.id,
       name: product.name,
-      price:
-        product.salePrice && product.salePrice < product.price
-          ? product.salePrice
-          : product.price,
-      image: product.featuredImage,
+      price: product.price,
+      salePrice: product.salePrice,
       quantity: quantity,
+      featuredImage: product.featuredImage,
     });
   }
 
   saveCart(cart);
-  updateCartBadge();
+  showToast(`${product.name} added to cart successfully!`);
   return cart;
 }
 
-// Remove item from cart
+// Remove product from cart
 export function removeFromCart(productId) {
   const cart = getCart();
   const updatedCart = cart.filter((item) => item.id !== productId);
   saveCart(updatedCart);
-  updateCartBadge();
   return updatedCart;
 }
 
-// Update item quantity
-export function updateCartItemQuantity(productId, quantity) {
+// Update product quantity in cart
+export function updateCartQuantity(productId, quantity) {
   const cart = getCart();
-  const itemIndex = cart.findIndex((item) => item.id === productId);
+  const item = cart.find((item) => item.id === productId);
 
-  if (itemIndex > -1) {
-    if (quantity <= 0) {
-      cart.splice(itemIndex, 1);
-    } else {
-      cart[itemIndex].quantity = quantity;
-    }
+  if (item) {
+    item.quantity = Math.max(1, quantity); // Ensure quantity is at least 1
     saveCart(cart);
-    updateCartBadge();
   }
 
   return cart;
 }
 
-// Get cart total items
-export function getCartTotalItems() {
-  const cart = getCart();
-  return cart.reduce((total, item) => total + item.quantity, 0);
+// Clear entire cart
+export function clearCart() {
+  const cart = [];
+  saveCart(cart);
+  updateCartUI();
+  // Also update the summary on cart/checkout page if present
+  if (document.querySelector(".order-totals")) {
+    // This is a bit of a workaround, ideally the checkout page would listen for cart changes
+    window.location.reload();
+  }
 }
 
-// Get cart total price
-export function getCartTotalPrice() {
-  const cart = getCart();
-  return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+// Calculate cart total
+export function calculateCartTotal(cart = getCart()) {
+  return cart.reduce((total, item) => {
+    const price =
+      item.salePrice && item.salePrice < item.price
+        ? item.salePrice
+        : item.price;
+    return total + price * item.quantity;
+  }, 0);
 }
 
-// Update cart badge
-export function updateCartBadge() {
+// Format price with GHS currency
+export function formatPrice(price) {
+  return `GHS ${price.toFixed(2)}`;
+}
+
+// Show toast notification
+export function showToast(message) {
+  // You can customize this based on your UI library
+  if (typeof bootstrap !== "undefined" && bootstrap.Toast) {
+    const toastHTML = `
+            <div class="toast-container position-fixed bottom-0 end-0 p-3">
+                <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                        <strong class="me-auto">Cart Update</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">${message}</div>
+                </div>
+            </div>`;
+
+    if (!document.querySelector(".toast-container")) {
+      document.body.insertAdjacentHTML("beforeend", toastHTML);
+    }
+
+    const toastElement = document.querySelector(".toast");
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+  } else {
+    alert(message); // Fallback if bootstrap is not available
+  }
+}
+
+// Update cart UI
+function updateCartUI() {
+  const cart = getCart();
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
+  const cartTotal = calculateCartTotal(cart);
+
+  // Update cart count in header/navbar if it exists
+  const cartCountElement = document.querySelector(".cart-count");
+  if (cartCountElement) {
+    cartCountElement.textContent = cartCount;
+  }
+
+  // Update cart badge if it exists
   const cartBadge = document.getElementById("cartTotal");
   if (cartBadge) {
-    cartBadge.textContent = getCartTotalItems();
+    // Animate badge if value changes
+    if (cartBadge.textContent !== String(cartCount)) {
+      cartBadge.classList.remove("cart-badge-animate");
+      // Force reflow to restart animation
+      void cartBadge.offsetWidth;
+      cartBadge.classList.add("cart-badge-animate");
+    }
+    cartBadge.textContent = cartCount;
+    cartBadge.style.display = cartCount > 0 ? "inline-flex" : "none";
+  }
+
+  // Update sidebar cart if it exists
+  const sidebarCart = document.getElementById("sidebar-cart");
+  if (sidebarCart) {
+    // Update cart title to show item count
+    const cartTitle = sidebarCart.querySelector(".title-cart-block h6");
+    if (cartTitle) {
+      cartTitle.textContent = `Shopping Cart (${cartCount})`;
+    }
+    updateSidebarCart(cart, cartTotal);
   }
 }
 
-// Show toast message
-export function showToast(message, type = "success") {
-  // Create toast container if it doesn't exist
-  let toastContainer = document.querySelector(".toast-container");
-  if (!toastContainer) {
-    toastContainer = document.createElement("div");
-    toastContainer.className = "toast-container position-fixed top-0 end-0 p-3";
-    document.body.appendChild(toastContainer);
+// Update sidebar cart content
+function updateSidebarCart(cart, total) {
+  const productList = document.querySelector("#sidebar-cart .product-list");
+  const totalElement = document.querySelector("#sidebar-cart .price-total");
+
+  if (productList) {
+    productList.innerHTML = cart
+      .map(
+        (item) => `
+            <li class="product-item mb-24" data-product-id="${item.id}">
+                <div class="d-flex align-items-center gap-12">
+                    <div class="item-image">
+                        <img src="${item.featuredImage}" alt="${item.name}">
+                    </div>
+                    <div class="prod-title">
+                        <a href="#" class="h6 medium-black font-sec fw-700 mb-8">${
+                          item.name
+                        }</a>
+                        <p class="subtitle mb-4p">Quantity: ${item.quantity}</p>
+                        <p class="subtitle">${formatPrice(
+                          item.salePrice && item.salePrice < item.price
+                            ? item.salePrice
+                            : item.price
+                        )}</p>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <a href="javascript:;" class="cancel mb-12 remove-from-cart">
+                        <i class="fa fa-trash text-danger"></i>
+                    </a>
+                    <div class="quantity quantity-wrap">
+                        <div class="input-area quantity-wrap">
+                            <input class="decrement" type="button" value="-">
+                            <input type="text" name="quantity" value="${
+                              item.quantity
+                            }" maxlength="2" size="1" class="number">
+                            <input class="increment" type="button" value="+">
+                        </div>
+                    </div>
+                </div>
+            </li>
+        `
+      )
+      .join("");
+
+    // Add event listeners for quantity buttons and remove buttons
+    addCartItemEventListeners();
   }
 
-  // Create toast element
-  const toast = document.createElement("div");
-  toast.className = `toast align-items-center text-white bg-${type} border-0`;
-  toast.setAttribute("role", "alert");
-  toast.setAttribute("aria-live", "assertive");
-  toast.setAttribute("aria-atomic", "true");
+  if (totalElement) {
+    totalElement.innerHTML = `
+            <span class="h6 fw-700 medium-black">SUBTOTAL</span>
+            <span class="h6 fw-700 medium-black">${formatPrice(total)}</span>
+        `;
+  }
+}
 
-  toast.innerHTML = `
-    <div class="d-flex">
-      <div class="toast-body">
-        ${message}
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  `;
+// Add event listeners for cart item interactions
+function addCartItemEventListeners() {
+  // Remove item buttons
+  document.querySelectorAll(".remove-from-cart").forEach((button) => {
+    button.onclick = (e) => {
+      const productItem = e.target.closest(".product-item");
+      const productId = productItem.dataset.productId;
+      removeFromCart(productId);
+    };
+  });
 
-  toastContainer.appendChild(toast);
-  const bsToast = new bootstrap.Toast(toast);
-  bsToast.show();
+  // Quantity buttons
+  document.querySelectorAll(".quantity-wrap").forEach((wrap) => {
+    const productItem = wrap.closest(".product-item");
+    const productId = productItem?.dataset.productId;
+    if (!productId) return;
 
-  // Remove toast after it's hidden
-  toast.addEventListener("hidden.bs.toast", () => {
-    toast.remove();
+    const decrementBtn = wrap.querySelector(".decrement");
+    const incrementBtn = wrap.querySelector(".increment");
+    const quantityInput = wrap.querySelector(".number");
+
+    decrementBtn.onclick = () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        updateCartQuantity(productId, currentValue - 1);
+      }
+    };
+
+    incrementBtn.onclick = () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      updateCartQuantity(productId, currentValue + 1);
+    };
+
+    quantityInput.onchange = () => {
+      const newValue = parseInt(quantityInput.value) || 1;
+      updateCartQuantity(productId, newValue);
+    };
   });
 }
+
+// Initialize cart when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  updateCartUI();
+});

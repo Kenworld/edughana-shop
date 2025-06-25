@@ -1001,10 +1001,31 @@ span {
     bottom: -20px;
   }
 }
-.cus-btn {
+.cus-btn,
+cus-btn-whatsapp {
   position: relative;
   overflow: hidden;
   border: 1px solid #04d2e4;
+  color: #fff;
+  display: inline-flex;
+  justify-content: center;
+  font-size: clamp(14px, 0.833vw, 40px);
+  font-family: "Comic Neue", serif;
+  font-weight: 700;
+  line-height: 120%;
+  padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
+  text-decoration: none;
+  border-radius: 84px;
+  cursor: pointer;
+  background: #04d2e4;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+.cus-btn-whatsapp {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #029b30;
   color: #fff;
   display: inline-flex;
   justify-content: center;
@@ -5413,4 +5434,68 @@ footer .payment-cards .card-block img {
   bottom: -10px; /* Adjust the distance of the underline from the text */
   left: 0;
   background-color: #04d2e4; /* Set the color of the underline */
+}
+
+.cart-badge-animate {
+  animation: cart-badge-pop 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes cart-badge-pop {
+  0% {
+    transform: scale(1);
+    background: #04d2e4;
+  }
+  30% {
+    transform: scale(1.3);
+    background: #ffb300;
+  }
+  60% {
+    transform: scale(0.95);
+    background: #04d2e4;
+  }
+  100% {
+    transform: scale(1);
+    background: #04d2e4;
+  }
+}
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  background-color: #25d366;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+}
+
+.whatsapp-float img {
+  width: 40px;
+  height: 40px;
+}
+
+/* Custom WhatsApp Button */
+.cus-btn-whatsapp {
+  background-color: #25d366;
+  border-color: #25d366;
+}
+
+.cus-btn-whatsapp:hover,
+.cus-btn-whatsapp:focus {
+  background-color: #128c7e;
+  border-color: #128c7e;
+}
+
+.cus-btn-whatsapp .btn-text,
+.cus-btn-whatsapp > span {
+  color: #fff !important;
+}
+.cus-btn-whatsapp .btn-text i,
+.cus-btn-whatsapp > span i {
+  margin-right: 8px;
 }
