@@ -5499,3 +5499,7 @@ footer .payment-cards .card-block img {
 .cus-btn-whatsapp > span i {
   margin-right: 8px;
 }
+
+.modal-content {
+  background-color: #ffffff !important;
+}

@@ -1,24 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import {
-  getFirestore,
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { db, doc, getDoc } from "./firebase-config.js";
 import { addToCart, showToast, updateCartBadge } from "./cart.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDc7xbG23UV8JN-KKpsJydorSeNw6gaOwM",
-  authDomain: "edughana-570cf.firebaseapp.com",
-  projectId: "edughana-570cf",
-  storageBucket: "edughana-570cf.firebasestorage.app",
-  messagingSenderId: "587349854173",
-  appId: "1:587349854173:web:79ee3e4f72b3a7d03bd834",
-  measurementId: "G-TKH2JVMRBK",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // Function to format price
 function formatPrice(price) {

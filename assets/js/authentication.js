@@ -1,7 +1,6 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
 import {
-  getAuth,
+  auth,
+  db,
   signInWithPopup,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
@@ -9,27 +8,10 @@ import {
   updateProfile,
   signOut,
   onAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import {
-  getFirestore,
   doc,
   setDoc,
   getDoc,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDc7xbG23UV8JN-KKpsJydorSeNw6gaOwM",
-  authDomain: "edughana-570cf.firebaseapp.com",
-  projectId: "edughana-570cf",
-  storageBucket: "edughana-570cf.firebasestorage.app",
-  messagingSenderId: "587349854173",
-  appId: "1:587349854173:web:79ee3e4f72b3a7d03bd834",
-  measurementId: "G-TKH2JVMRBK",
-};
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-const auth = getAuth(app);
-const db = getFirestore();
+} from "./firebase-config.js";
 
 const provider = new GoogleAuthProvider();
 
@@ -252,5 +234,3 @@ if (
     }
   });
 }
-
-export { auth, db };

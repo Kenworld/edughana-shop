@@ -1,6 +1,5 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import {
-  getFirestore,
+  db,
   collection,
   query,
   where,
@@ -8,23 +7,9 @@ import {
   limit,
   startAfter,
   getDocs,
-} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+} from "./firebase-config.js";
 // import { addToCart, showToast, updateCartBadge } from "./cart.js";
 import { addToCart, showToast } from "./cart.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDc7xbG23UV8JN-KKpsJydorSeNw6gaOwM",
-  authDomain: "edughana-570cf.firebaseapp.com",
-  projectId: "edughana-570cf",
-  storageBucket: "edughana-570cf.firebasestorage.app",
-  messagingSenderId: "587349854173",
-  appId: "1:587349854173:web:79ee3e4f72b3a7d03bd834",
-  measurementId: "G-TKH2JVMRBK",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 
 // Constants
 const PRODUCTS_PER_PAGE = 20;

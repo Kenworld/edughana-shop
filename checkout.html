@@ -777,19 +777,49 @@
     <!-- Login Prompt Modal -->
     <div class="modal fade" id="loginPromptModal" tabindex="-1" aria-labelledby="loginPromptModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="loginPromptModalLabel">Authentication Required</h5>
+                    <h5 class="modal-title" id="loginPromptModalLabel">Almost There!</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Please log in to place an order.</p>
-                    <p>Alternatively, you can use the fast and easy WhatsApp checkout option.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="cus-btn-2 btn-sec" data-bs-dismiss="modal">Close</button>
-                    <a href="login.html?redirect=checkout.html" class="cus-btn">Login</a>
+                    <div class="row">
+                        <!-- Guest Checkout -->
+                        <div class="col-md-6 border-end">
+                            <h6 class="fw-bold mb-3">Checkout as a Guest</h6>
+                            <p>You can continue without creating an account. You'll be able to create an account later
+                                if
+                                you wish.</p>
+                            <button type="button" class="cus-btn w-100" id="guest-checkout-btn">
+                                <span class="btn-text">Continue as Guest</span>
+                                <span>Continue as Guest</span>
+                            </button>
+                        </div>
+
+                        <!-- Login Form -->
+                        <div class="col-md-6">
+                            <h6 class="fw-bold mb-3">Login to your Account</h6>
+                            <form id="modal-login-form">
+                                <div class="mb-3">
+                                    <label for="modal-email" class="form-label">Email address</label>
+                                    <input type="email" class="form-control" id="modal-email" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="modal-password" class="form-label">Password</label>
+                                    <input type="password" class="form-control" id="modal-password" required>
+                                </div>
+                                <div id="modal-login-error" class="text-danger mb-3 d-none"></div>
+                                <button type="submit" class="cus-btn w-100">
+                                    <span class="btn-text">Login & Continue</span>
+                                    <span>Login & Continue</span>
+                                </button>
+                                <p class="text-center mt-3 mb-0">
+                                    Don't have an account? <a href="signup.html">Sign Up</a>
+                                </p>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -797,45 +827,7 @@
 
     <script type="module" src="assets/js/authentication.js"></script>
     <script type="module" src="assets/js/checkout.js"></script>
-    <script>
-        // Form validation
-        document.addEventListener('DOMContentLoaded', function () {
-            // Payment method toggle
-            const momoFields = document.getElementById('momoFields');
-            const cardFields = document.getElementById('cardFields');
-            const cashFields = document.getElementById('cashFields');
-            const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
 
-            paymentMethods.forEach(method => {
-                method.addEventListener('change', function () {
-                    if (this.id === 'momo') {
-                        momoFields.classList.remove('d-none');
-                        cardFields.classList.add('d-none');
-                        cashFields.classList.add('d-none');
-                    } else if (this.id === 'card') {
-                        cashFields.classList.add('d-none');
-                        momoFields.classList.add('d-none');
-                        cardFields.classList.remove('d-none');
-                    }
-                    else {
-                        cashFields.classList.remove('d-none');
-                        momoFields.classList.add('d-none');
-                        cardFields.classList.add('d-none');
-                    }
-                });
-            });
-
-            // Form validation
-            const form = document.getElementById('checkout-form');
-            form.addEventListener('submit', function (event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-                form.classList.add('was-validated');
-            });
-        });
-    </script>
     <!-- Jquery Js -->
     <script src="assets/js/vendor/bootstrap.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.3.min.js"></script>
@@ -846,126 +838,6 @@
     <script src="assets/js/app.js"></script>
     <script type="module">
         import { getCart, formatPrice, calculateCartTotal as calculateCartSubtotal } from './assets/js/cart.js';
-
-        // Calculates all totals for the checkout page
-        function getCheckoutTotals() {
-            const cart = getCart();
-            const subtotal = calculateCartSubtotal(cart);
-            const shipping = cart.length > 0 ? 20 : 0; // Standard GHS 20 shipping
-            const total = subtotal + shipping;
-            return { subtotal, shipping, total };
-        }
-
-        function renderOrderSummary() {
-            const cart = getCart();
-            const orderItemsDiv = document.querySelector('.order-items');
-            if (!orderItemsDiv) return;
-
-            if (cart.length === 0) {
-                orderItemsDiv.innerHTML = `<div class="text-center py-4">Your cart is empty.</div>`;
-                updateOrderTotals();
-                return;
-            }
-
-            orderItemsDiv.innerHTML = cart.map(item => `
-            <div class="d-flex align-items-center gap-3 mb-3">
-                <img src="${item.featuredImage}" alt="${item.name}" class="rounded" style="width: 60px; height: 60px; object-fit: cover;">
-                <div class="flex-grow-1">
-                    <h6 class="mb-1">${item.name}</h6>
-                    <p class="mb-0 text-muted">Quantity: ${item.quantity}</p>
-                </div>
-                <div class="fw-semibold">${formatPrice((item.salePrice && item.salePrice < item.price ? item.salePrice : item.price) * item.quantity)}</div>
-            </div>
-        `).join('');
-
-            updateOrderTotals();
-        }
-
-        function updateOrderTotals() {
-            const { subtotal, shipping, total } = getCheckoutTotals();
-
-            // Update summary elements
-            const orderTotalsDiv = document.querySelector('.order-totals');
-            if (orderTotalsDiv) {
-                orderTotalsDiv.innerHTML = `
-                <div class="d-flex justify-content-between mb-2">
-                    <span>Subtotal</span>
-                    <span class="fw-semibold subtotal-amount">${formatPrice(subtotal)}</span>
-                </div>
-                <div classd-flex justify-content-between mb-2">
-                    <span>Shipping</span>
-                    <span class="fw-semibold shipping-amount">${formatPrice(shipping)}</span>
-                </div>
-                <hr>
-                <div class="d-flex justify-content-between mb-4">
-                    <span class="fw-bold">Total</span>
-                    <span class="fw-bold color-primary total-amount">${formatPrice(total)}</span>
-                </div>
-            `;
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            renderOrderSummary();
-
-            const whatsappBtn = document.getElementById('whatsapp-checkout-btn');
-            const form = document.getElementById('checkout-form');
-
-            if (whatsappBtn && form) {
-                whatsappBtn.addEventListener('click', function () {
-                    if (!form.checkValidity()) {
-                        form.classList.add('was-validated');
-                        // Trigger validation UI
-                        const tempSubmit = document.createElement('button');
-                        tempSubmit.type = 'submit';
-                        tempSubmit.style.display = 'none';
-                        form.appendChild(tempSubmit);
-                        tempSubmit.click();
-                        form.removeChild(tempSubmit);
-                        return;
-                    }
-
-                    const firstName = document.getElementById('firstName').value;
-                    const lastName = document.getElementById('lastName').value;
-                    const email = document.getElementById('email').value;
-                    const phone = document.getElementById('phone').value;
-                    const address1 = document.getElementById('address').value;
-                    const address2 = document.getElementById('address2').value;
-                    const city = document.getElementById('city').value;
-                    const region = document.getElementById('region').value;
-                    const note = document.getElementById('deliverNote').value;
-
-                    let message = `*New Order from Edugh Shop Website*\n\n`;
-                    message += `*Customer Details:*\n`;
-                    message += `Name: ${firstName} ${lastName}\n`;
-                    message += `Phone: ${phone}\n`;
-                    message += `Email: ${email}\n`;
-                    message += `Address: ${address1}${address2 ? ', ' + address2 : ''}, ${city}, ${region}\n`;
-                    if (note) {
-                        message += `Order Note: ${note}\n`;
-                    }
-                    message += `\n*Order Summary:*\n`;
-
-                    const cart = getCart();
-                    cart.forEach(item => {
-                        const itemPrice = (item.salePrice && item.salePrice < item.price) ? item.salePrice : item.price;
-                        message += `- ${item.name} (x${item.quantity}) - ${formatPrice(itemPrice * item.quantity)}\n`;
-                    });
-
-                    const { subtotal, shipping, total } = getCheckoutTotals();
-
-                    message += `\n*Subtotal:* ${formatPrice(subtotal)}\n`;
-                    message += `*Shipping:* ${formatPrice(shipping)}\n`;
-                    message += `*Total:* ${formatPrice(total)}\n\n`;
-                    message += `Please confirm my order.`;
-
-                    const whatsappNumber = '233202202020';
-                    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
-
-                    window.open(whatsappUrl, '_blank');
-                });
-            }
-        });
     </script>
 </body>
 
