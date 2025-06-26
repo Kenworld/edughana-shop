@@ -1,5 +1,5 @@
 @import url(https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap);
-@import url(https://fonts.googleapis.com/css2?family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Comfortaa:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap);
 @charset "UTF-8";
 
 .loader {
@@ -166,7 +166,7 @@ h6,
 }
 h1,
 .h1 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(48px, 3.177vw, 180px);
   font-weight: 400;
   line-height: 120%;
@@ -185,7 +185,7 @@ h1,
 }
 h2,
 .h2 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(40px, 2.552vw, 140px);
   font-style: normal;
   font-weight: 400;
@@ -211,7 +211,7 @@ h2,
 }
 h3,
 .h3 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(36px, 2.031vw, 108px);
   font-style: normal;
   font-weight: 400;
@@ -237,7 +237,7 @@ h3,
 }
 h4,
 .h4 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(27px, 1.615vw, 92px);
   font-style: normal;
   font-weight: 400;
@@ -263,7 +263,7 @@ h4,
 }
 h5,
 .h5 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(22px, 1.302vw, 84px);
   font-style: normal;
   font-weight: 400;
@@ -289,7 +289,7 @@ h5,
 }
 h6,
 .h6 {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(18px, 1.042vw, 61px);
   font-style: normal;
   font-weight: 400;
@@ -494,7 +494,7 @@ span {
   font-family: "Poppins", sans-serif;
 }
 .font-sec {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
 }
 .br-4 {
   border-radius: clamp(2px, 0.208vw, 28px);
@@ -1010,7 +1010,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -1030,7 +1030,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -1101,7 +1101,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -3271,7 +3271,7 @@ header .header-buttons a:hover {
   text-align: center;
 }
 .latest-product-card .product-desc .product-title {
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   transition: all 0.5s ease-in-out;
   color: #0c0c0d;
   font-weight: 500;
@@ -3800,7 +3800,7 @@ footer .payment-cards .card-block img {
   cursor: pointer;
   color: #141516;
   border: 1px solid #45474f;
-  font-family: "Comic Neue", serif;
+  font-family: "Comfortaa", serif;
   background: #fff0;
   transition: 0.3s;
   user-select: none;
