@@ -113,7 +113,7 @@ export function showToast(message) {
 }
 
 // Update cart UI
-function updateCartUI() {
+export function updateCartUI() {
   const cart = getCart();
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
   const cartTotal = calculateCartTotal(cart);

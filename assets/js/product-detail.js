@@ -1,5 +1,5 @@
 import { db, doc, getDoc } from "./firebase-config.js";
-import { addToCart, showToast, updateCartBadge } from "./cart.js";
+import { addToCart, showToast, updateCartUI } from "./cart.js";
 
 // Function to format price
 function formatPrice(price) {
@@ -56,10 +56,40 @@ function updateProductDetails(product) {
       shortDescriptionElement.innerHTML = product.shortDescription;
     }
 
+    // Update the Details tab (long description)
     const longDescriptionElement = document.getElementById("longDescription");
     if (longDescriptionElement) {
-      longDescriptionElement.innerHTML = product.longDescription;
+      longDescriptionElement.innerHTML =
+        product.longDescription || "No details available.";
     }
+
+    // Update the Specifications tab
+    const specFields = [
+      { id: "specColor", value: product.color },
+      { id: "specBrand", value: product.brandName },
+      {
+        id: "specNextDay",
+        value: product.nextDayDelivery,
+      },
+      { id: "specType", value: product.type },
+      {
+        id: "specWashable",
+        value: product.washable,
+      },
+      { id: "specWeight", value: product.weight },
+      { id: "specProductCode", value: product.productCode },
+    ];
+    specFields.forEach((field) => {
+      const el = document.getElementById(field.id);
+      if (el) {
+        el.textContent =
+          field.value !== undefined &&
+          field.value !== null &&
+          field.value !== ""
+            ? field.value
+            : "N/A";
+      }
+    });
 
     // Update product images
     const mainSlider = document.querySelector(".product-detail-slider");
@@ -199,5 +229,5 @@ async function loadProductDetails() {
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   loadProductDetails();
-  updateCartBadge(); // Update cart badge on page load
+  updateCartUI(); // Update cart badge on page load
 });
