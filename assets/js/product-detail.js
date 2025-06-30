@@ -142,6 +142,20 @@ function updateProductDetails(product) {
         showToast(`${product.name} added to cart successfully!`);
       });
     });
+
+    // Add event listener for Buy It Now button
+    const buyNowButton = document.querySelector(
+      "a.cus-btn.text-center.w-100[href='checkout.html']"
+    );
+    if (buyNowButton) {
+      buyNowButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        const quantityInput = document.querySelector(".quantity .number");
+        const quantity = quantityInput ? parseInt(quantityInput.value) || 1 : 1;
+        addToCart(product, quantity);
+        window.location.href = "checkout.html";
+      });
+    }
   } catch (error) {
     console.error("Error updating product details:", error);
     showToast("Error loading product details. Please try again.", "error");

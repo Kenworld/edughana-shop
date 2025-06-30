@@ -169,6 +169,47 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Email Checkout Button Handler
+  const emailCheckoutBtn = document.getElementById("email-checkout-btn");
+  if (emailCheckoutBtn) {
+    emailCheckoutBtn.addEventListener("click", () => {
+      const cart = getCart();
+      if (!cart.length) return;
+      let orderSummary = cart
+        .map(
+          (item) =>
+            `- ${item.name} (x${item.quantity}): ${formatPrice(
+              (item.salePrice && item.salePrice < item.price
+                ? item.salePrice
+                : item.price) * item.quantity
+            )}`
+        )
+        .join("%0D%0A");
+      const totals = getCheckoutTotals();
+      orderSummary += `%0D%0A%0D%0ASubtotal: ${formatPrice(totals.subtotal)}`;
+      orderSummary += `%0D%0AShipping: ${formatPrice(totals.shipping)}`;
+      orderSummary += `%0D%0ATotal: ${formatPrice(totals.total)}`;
+      const subject = encodeURIComponent("New Order from Edu Ghana Shop");
+      const body = encodeURIComponent(
+        `Hello,%0D%0A%0D%0AI would like to place the following order:%0D%0A%0D%0A${orderSummary}%0D%0A%0D%0AName: [Your Name Here]%0D%0AEmail: [Your Email Here]%0D%0APhone: [Your Phone Here]%0D%0AAddress: [Your Address Here]%0D%0A`
+      );
+      window.location.href = `mailto:sales@edu-gh.net?subject=${subject}&body=${body}`;
+    });
+  }
+
+  // Show info modal if cart is empty
+  const cart = getCart();
+  if (!cart.length) {
+    const emptyCartModal = document.getElementById("emptyCartModal");
+    if (emptyCartModal && typeof bootstrap !== "undefined" && bootstrap.Modal) {
+      const modalInstance = new bootstrap.Modal(emptyCartModal, {
+        backdrop: "static",
+        keyboard: false,
+      });
+      modalInstance.show();
+    }
+  }
+
   // Initial Render of the order summary
   renderOrderSummary();
 });
@@ -188,18 +229,40 @@ function renderOrderSummary() {
   const orderItemsDiv = document.querySelector(".order-items");
   if (!orderItemsDiv) return;
 
+  // Get all checkout-related buttons
+  const placeOrderBtn = document.getElementById("checkoutBtn");
+  const whatsappBtn = document.getElementById("whatsapp-checkout-btn");
+  const emailBtn = document.getElementById("email-checkout-btn"); // For future use
+
   if (cart.length === 0) {
     orderItemsDiv.innerHTML = `<div class="text-center py-4">Your cart is empty. <a href="shop.html">Continue shopping</a>.</div>`;
-    // Disable checkout buttons if cart is empty
-    document.querySelector(
-      '#checkout-form button[type="submit"]'
-    ).disabled = true;
-    document.getElementById("whatsapp-checkout-btn").style.pointerEvents =
-      "none";
-    document.getElementById("whatsapp-checkout-btn").style.opacity = "0.6";
-
+    // Disable all checkout buttons if cart is empty
+    if (placeOrderBtn) placeOrderBtn.disabled = true;
+    if (whatsappBtn) {
+      whatsappBtn.disabled = true;
+      whatsappBtn.style.pointerEvents = "none";
+      whatsappBtn.style.opacity = "0.6";
+    }
+    if (emailBtn) {
+      emailBtn.disabled = true;
+      emailBtn.style.pointerEvents = "none";
+      emailBtn.style.opacity = "0.6";
+    }
     updateOrderTotals();
     return;
+  }
+
+  // Enable all checkout buttons if cart is not empty
+  if (placeOrderBtn) placeOrderBtn.disabled = false;
+  if (whatsappBtn) {
+    whatsappBtn.disabled = false;
+    whatsappBtn.style.pointerEvents = "auto";
+    whatsappBtn.style.opacity = "1";
+  }
+  if (emailBtn) {
+    emailBtn.disabled = false;
+    emailBtn.style.pointerEvents = "auto";
+    emailBtn.style.opacity = "1";
   }
 
   orderItemsDiv.innerHTML = cart

@@ -9,7 +9,7 @@ import {
   getDocs,
 } from "./firebase-config.js";
 // import { addToCart, showToast, updateCartBadge } from "./cart.js";
-import { addToCart, showToast } from "./cart.js";
+import { addToCart, showToast, updateCartUI } from "./cart.js";
 
 // Constants
 const PRODUCTS_PER_PAGE = 20;
@@ -292,5 +292,59 @@ async function displayProducts(page = 1) {
 // Initialize the page
 document.addEventListener("DOMContentLoaded", () => {
   displayProducts(1);
-  updateCartBadge(); // Update cart badge on page load
+  updateCartUI(); // Update cart badge on page load
+
+  // --- Price Filter Logic ---
+  const inputMin = document.querySelector(".input-min");
+  const inputMax = document.querySelector(".input-max");
+  const rangeMin = document.querySelector(".range-min");
+  const rangeMax = document.querySelector(".range-max");
+
+  function getCurrentMinMax() {
+    // Always parse as numbers
+    const min = Math.min(Number(inputMin.value), Number(inputMax.value));
+    const max = Math.max(Number(inputMin.value), Number(inputMax.value));
+    return { min, max };
+  }
+
+  function filterAndRenderProductsByPrice() {
+    if (!window.productsList) return;
+    const { min, max } = getCurrentMinMax();
+    // Filter: show if either price or salePrice is in range
+    const filtered = window.productsList.filter((product) => {
+      const price = Number(product.price);
+      const salePrice = product.salePrice ? Number(product.salePrice) : null;
+      // In range if price or salePrice is in range
+      const inRange =
+        (price >= min && price <= max) ||
+        (salePrice !== null && salePrice >= min && salePrice <= max);
+      return inRange;
+    });
+    if (filtered.length === 0) {
+      productsList.innerHTML =
+        '<div class="text-center"><p>No products found</p></div>';
+    } else {
+      productsList.innerHTML = filtered.map(createProductCard).join("");
+      initLazyLoading();
+      document.querySelectorAll(".add-to-cart-btn").forEach((button) => {
+        button.addEventListener("click", handleAddToCart);
+      });
+    }
+  }
+
+  // Sync number inputs and range sliders
+  function syncInputs(e) {
+    // If a number input changes, update the corresponding range
+    if (e.target === inputMin) rangeMin.value = inputMin.value;
+    if (e.target === inputMax) rangeMax.value = inputMax.value;
+    // If a range changes, update the corresponding number input
+    if (e.target === rangeMin) inputMin.value = rangeMin.value;
+    if (e.target === rangeMax) inputMax.value = rangeMax.value;
+    filterAndRenderProductsByPrice();
+  }
+
+  inputMin.addEventListener("input", syncInputs);
+  inputMax.addEventListener("input", syncInputs);
+  rangeMin.addEventListener("input", syncInputs);
+  rangeMax.addEventListener("input", syncInputs);
 });
