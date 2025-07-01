@@ -354,6 +354,60 @@ var MyScroll = "";
         });
       }
     },
+    filterToggle: function () {
+      if ($(".ageGroup-block").length) {
+        $(".ageGroup-block .title").on("click", function (e) {
+          var count = $(this).data("count");
+          if (
+            $(".ageGroup-block.box-" + count + " .content-block").is(":visible")
+          ) {
+            $(".ageGroup-block.box-" + count + " span i").removeClass(
+              "fa-chevron-up"
+            );
+            $(".ageGroup-block.box-" + count + " span i").addClass(
+              "fa-chevron-down"
+            );
+            $(".ageGroup-block.box-" + count + " .content-block").hide("slow");
+          } else {
+            $(".ageGroup-block.box-" + count + " span i").removeClass(
+              "fa-chevron-down"
+            );
+            $(".ageGroup-block.box-" + count + " span i").addClass(
+              "fa-chevron-up"
+            );
+            $(".ageGroup-block.box-" + count + " .content-block").show("slow");
+          }
+        });
+      }
+      if ($(".toggle-sidebar").length) {
+        $(".filter-btn").on("click", function () {
+          $(".toggle-sidebar").animate({ left: "0" }, 300);
+          $(".sidebar-overlay").fadeIn(300);
+          $("body").addClass("no-scroll");
+        });
+        $(".sidebar-overlay").on("click", function () {
+          $(".toggle-sidebar").animate({ left: "-800px" }, 300);
+          $(this).fadeOut(300);
+          $("body").removeClass("no-scroll");
+        });
+      }
+      if ($(".feature-products").length) {
+        $(".tab-link").click(function () {
+          var tabID = $(this).attr("data-tab");
+          $(this).addClass("active").siblings().removeClass("active");
+          $("#tab-" + tabID)
+            .addClass("active")
+            .siblings()
+            .removeClass("active");
+          var currentSlider = $("#tab-" + tabID).find(".product-slider");
+          if (currentSlider.hasClass("slick-initialized")) {
+            currentSlider.slick("setPosition");
+          } else {
+            currentSlider.slick();
+          }
+        });
+      }
+    },
     checkBoxes: function () {
       $(".sub-checkboxes").hide();
       $(".arrow-block").click(function () {
