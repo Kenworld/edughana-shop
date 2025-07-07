@@ -55,35 +55,34 @@ function createProductCard(product) {
             </li>
           </ul>
         </div>
-        <button class="cus-btn add-to-cart-btn" data-product-id="${product.id}">
-          <span class="btn-text">Add Cart</span>
-          <span>Go to Cart</span>
-        </button>
       </div>
-      <div class="product-desc">
-        <div>
-          <a href="product-detail.html?id=${
-            product.id
-          }" class="product-title h6 fw-700 mb-8">${product.name}</a>
-          <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-            <div class="rating-stars">
-              ${Array(5)
-                .fill()
-                .map(
-                  () => `
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" fill="none">
-                  <path d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z" fill="#E85F3E"/>
-                </svg>
-              `
-                )
-                .join("")}
-            </div>
-            <p class="fw-500">(${product.reviews?.length || 0})</p>
+      <div class="product-desc d-flex flex-column align-items-center justify-content-between">
+        <a href="product-detail.html?id=${
+          product.id
+        }" class="product-title h6 fw-700 mb-8 text-center product-title-truncate">${
+    product.name
+  }</a>
+        <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
+          <div class="rating-stars">
+            ${Array(5)
+              .fill()
+              .map(
+                () => `
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" fill="none">
+                <path d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z" fill="#E85F3E"/>
+              </svg>
+            `
+              )
+              .join("")}
           </div>
-          <h5 class="medium-black fw-700">${formatPrice(
-            hasSale ? product.salePrice : product.price
-          )}</h5>
+          <p class="fw-500">(${product.reviews?.length || 0})</p>
         </div>
+        <h5 class="medium-black fw-700 mb-2">${formatPrice(
+          hasSale ? product.salePrice : product.price
+        )}</h5>
+        <button class="cus-btn add-to-cart-btn w-100 mt-auto" data-product-id="${
+          product.id
+        }" style="background-color:#04d2e4; color:#fff;">Add to Cart</button>
       </div>
     </div>
   `;

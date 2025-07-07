@@ -197,6 +197,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // WhatsApp Checkout Button Handler
+  const whatsappCheckoutBtn = document.getElementById("whatsapp-checkout-btn");
+  if (whatsappCheckoutBtn) {
+    whatsappCheckoutBtn.addEventListener("click", checkoutViaWhatsApp);
+  }
+
   // Show info modal if cart is empty
   const cart = getCart();
   if (!cart.length) {
@@ -319,5 +325,55 @@ function updateOrderTotals() {
   }
 }
 
-// Note: The WhatsApp checkout logic is kept in checkout.html as it has its own dependency set
-// and doesn't depend on Firebase auth state.
+function checkoutViaWhatsApp() {
+  const cart = getCart();
+  if (!cart.length) return;
+  let orderSummary = cart
+    .map(
+      (item) =>
+        `- ${item.name} (x${item.quantity}): ${formatPrice(
+          (item.salePrice && item.salePrice < item.price
+            ? item.salePrice
+            : item.price) * item.quantity
+        )}`
+    )
+    .join("\n");
+  const totals = getCheckoutTotals();
+
+  // Get customer details from form
+  const firstName = document.getElementById("firstName")?.value || "";
+  const lastName = document.getElementById("lastName")?.value || "";
+  const email = document.getElementById("email")?.value || "";
+  const phone = document.getElementById("phone")?.value || "";
+  const address = document.getElementById("address")?.value || "";
+  const address2 = document.getElementById("address2")?.value || "";
+  const city = document.getElementById("city")?.value || "";
+  const region = document.getElementById("region")?.value || "";
+  const fullAddress = `${address}${
+    address2 ? ", " + address2 : ""
+  }, ${city}, ${region}`;
+
+  const message = [
+    "Hello,",
+    "",
+    "I'd like to place an order:",
+    "",
+    "Order Summary:",
+    orderSummary,
+    "",
+    `Subtotal: ${formatPrice(totals.subtotal)}`,
+    `Shipping: ${formatPrice(totals.shipping)}`,
+    `Total: ${formatPrice(totals.total)}`,
+    "",
+    "Customer Details:",
+    `Name: ${firstName} ${lastName}`.trim(),
+    `Email: ${email}`,
+    `Phone: ${phone}`,
+    `Address: ${fullAddress}`,
+  ].join("\n");
+  const whatsappNumber = "233572423472";
+  window.open(
+    `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}

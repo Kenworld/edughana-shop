@@ -18,6 +18,7 @@ let isLastPage = false;
 let allProducts = []; // To cache all products for searching and filtering
 let currentPage = 1;
 const pageCursors = { 1: null }; // Store cursor for each page
+let totalPages = 1;
 
 window.productsList = []; // For cart functionality
 
@@ -176,6 +177,9 @@ function formatPrice(price) {
 // Function to create product card HTML
 function createProductCard(product) {
   const hasSale = product.salePrice && product.salePrice < product.price;
+  // Check if product is in wishlist
+  let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+  const inWishlist = wishlist.includes(product.id);
 
   return `
     <div class="col-lg-4 col-md-6 col-sm-6 wow fadeInUp animated animated" data-wow-delay="400ms">
@@ -202,8 +206,10 @@ function createProductCard(product) {
           <div class="side-icons">
             <ul class="list-unstyled">
               <li>
-                <a href="wishlist.html">
-                  <i class="fa-light fa-heart"></i>
+                <a href="wishlist.html" class="wishlist-btn">
+                  <i class="${
+                    inWishlist ? "fa-solid" : "fa-light"
+                  } fa-heart"></i>
                 </a>
               </li>
               <li>
@@ -213,49 +219,42 @@ function createProductCard(product) {
               </li>
             </ul>
           </div>
-          <button class="cus-btn add-to-cart-btn" data-product-id="${
-            product.id
-          }">
-            <span class="btn-text">Add Cart</span>
-            <span>Go to Cart</span>
-          </button>
         </div>
-        <div class="product-desc">
-          <div>
-            <a href="product-detail.html?id=${
-              product.id
-            }" class="product-title h6 fw-700 mb-8">
-              ${product.name}
-            </a>
-            <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
-              <div class="rating-stars">
-                ${Array(5)
-                  .fill(
-                    `
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="13" viewBox="0 0 14 13" fill="none">
-                      <path d="M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z" fill="#E85F3E"/>
-                    </svg>
+        <div class="product-desc d-flex flex-column align-items-center justify-content-between">
+          <a href="product-detail.html?id=${
+            product.id
+          }" class="product-title h6 fw-700 mb-8 text-center product-title-truncate">
+            ${product.name}
+          </a>
+          <div class="d-flex align-items-center gap-8 justify-content-center mb-8">
+            <div class="rating-stars">
+              ${Array(5)
+                .fill(
                   `
-                  )
-                  .join("")}
-              </div>
-              <p class="fw-500">(246)</p>
+                  <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"13\" viewBox=\"0 0 14 13\" fill=\"none\">
+                    <path d=\"M6.42937 0.826541C6.60898 0.273755 7.39102 0.273757 7.57063 0.826543L8.6614 4.18359C8.74173 4.4308 8.9721 4.59818 9.23204 4.59818H12.7618C13.3431 4.59818 13.5847 5.34195 13.1145 5.68359L10.2588 7.75835C10.0485 7.91114 9.96055 8.18196 10.0409 8.42917L11.1316 11.7862C11.3113 12.339 10.6786 12.7987 10.2083 12.457L7.35267 10.3823C7.14238 10.2295 6.85762 10.2295 6.64733 10.3823L3.79166 12.457C3.32143 12.7987 2.68874 12.339 2.86835 11.7862L3.95912 8.42917C4.03945 8.18196 3.95145 7.91114 3.74116 7.75835L0.885485 5.68359C0.415257 5.34194 0.656924 4.59818 1.23816 4.59818H4.76796C5.0279 4.59818 5.25827 4.4308 5.3386 4.18359L6.42937 0.826541Z" fill=\"#E85F3E\"/>
+                  </svg>
+                `
+                )
+                .join("")}
             </div>
-            <div class="row">
-              <h5 class="medium-black fw-700 col-md-6">
-                ${formatPrice(hasSale ? product.salePrice : product.price)}
-              </h5>
-              ${
-                hasSale
-                  ? `
-                <span class="text-decoration-line-through col-md-6">
-                  ${formatPrice(product.price)}
-                </span>
-              `
-                  : ""
-              }
-            </div>
+            <p class="fw-500">(246)</p>
           </div>
+          <div class="d-flex align-items-center gap-8 justify-content-center mb-2">
+            <h5 class="medium-black fw-700 mb-0">${formatPrice(
+              hasSale ? product.salePrice : product.price
+            )}</h5>
+            ${
+              hasSale
+                ? `<span class=\"text-decoration-line-through ms-2\">${formatPrice(
+                    product.price
+                  )}</span>`
+                : ""
+            }
+          </div>
+          <button class="cus-btn add-to-cart-btn w-100 mt-auto" data-product-id="${
+            product.id
+          }" style="background-color:#04d2e4; color:#fff;">Add to Cart</button>
         </div>
       </div>
     </div>
@@ -305,6 +304,7 @@ async function fetchAllProducts() {
     querySnapshot.forEach((doc) =>
       allProducts.push({ id: doc.id, ...doc.data() })
     );
+    totalPages = Math.max(1, Math.ceil(allProducts.length / PRODUCTS_PER_PAGE));
     return allProducts;
   } catch (error) {
     console.error("Error fetching all products:", error);
@@ -494,10 +494,54 @@ function renderCategoryAccordion(
   placeholder.innerHTML = menuHTML;
 }
 
+function renderAllCategoriesDropdown(categories) {
+  console.log("Dropdown categories:", categories); // Debug
+  const dropdown = document.getElementById("allCategoriesDropdown");
+  if (!dropdown) return;
+  let html = '<ul class="all-categories-list">';
+  for (const category in categories) {
+    html += `<li class="dropdown-category">
+      <span class="category-title">${category}</span>
+      <ul class="subcategories-list">`;
+    categories[category].forEach((subcat) => {
+      const isActive = filterState.subcategories.includes(subcat)
+        ? "active"
+        : "";
+      html += `<li class="subcategory-item ${isActive}" data-subcat="${subcat}">${subcat}</li>`;
+    });
+    html += "</ul></li>";
+  }
+  html += "</ul>";
+  dropdown.innerHTML = html;
+  console.log("Dropdown HTML:", dropdown.innerHTML); // Debug
+
+  // Add click handlers to subcategory items
+  dropdown.querySelectorAll(".subcategory-item").forEach((item) => {
+    item.addEventListener("click", function (e) {
+      e.stopPropagation();
+      const subcat = this.getAttribute("data-subcat");
+      // Toggle subcategory filter
+      if (filterState.subcategories.includes(subcat)) {
+        filterState.subcategories = filterState.subcategories.filter(
+          (s) => s !== subcat
+        );
+      } else {
+        filterState.subcategories = [subcat]; // Only one at a time for dropdown
+      }
+      updateProductListWithFilters(allProducts);
+      // Re-render dropdown to update active state
+      renderAllCategoriesDropdown(categories);
+      // Hide dropdown after selection
+      dropdown.style.display = "none";
+    });
+  });
+}
+
 async function initShopPage() {
   const allFetchedProducts = await fetchAllProducts();
   const categories = buildCategoriesFromProducts(allFetchedProducts);
   renderCategoryAccordion(categories);
+  renderAllCategoriesDropdown(categories);
   setupCategoryFilterListeners(allFetchedProducts);
   setupPriceFilterListeners(allFetchedProducts);
   setupOtherFilterListeners(allFetchedProducts);
@@ -521,5 +565,33 @@ document.addEventListener("DOMContentLoaded", () => {
   initShopPage();
   updateCartUI();
   productsList.addEventListener("click", handleAddToCart);
-  // Any other event listeners for filters, etc., would go here.
+  // No JS for dropdown show/hide; CSS :hover will handle it
+
+  // Wishlist functionality
+  productsList.addEventListener("click", function (e) {
+    const heartIcon = e.target.closest(".fa-heart");
+    if (heartIcon) {
+      e.preventDefault();
+      const productCard = heartIcon.closest(".latest-product-card");
+      if (!productCard) return;
+      // Find the product ID from the product detail link
+      const detailLink = productCard.querySelector("a.image");
+      if (!detailLink) return;
+      const url = new URL(detailLink.href, window.location.origin);
+      const productId = url.searchParams.get("id");
+      if (!productId) return;
+      // Get wishlist from localStorage
+      let wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+      if (!wishlist.includes(productId)) {
+        wishlist.push(productId);
+        localStorage.setItem("wishlist", JSON.stringify(wishlist));
+        showToast("Added to wishlist!");
+        // Update heart icon to filled
+        heartIcon.classList.remove("fa-light");
+        heartIcon.classList.add("fa-solid");
+      } else {
+        showToast("Already in wishlist!");
+      }
+    }
+  });
 });
