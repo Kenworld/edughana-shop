@@ -32,14 +32,10 @@ const accFname = document.getElementById("accFname");
 const accLname = document.getElementById("accLname");
 const accEmail = document.getElementById("accEmail");
 const accPhone = document.getElementById("accPhone");
-const accLocation = document.getElementById("accLocation");
+const accLocation = document.getElementById("accAddress");
 loader.style.display = "none";
 
 //Password  rest
-const oldPassword = document.getElementById("oldPassword").value;
-const newPassword = document.getElementById("newPassword").value;
-const confirmPassword = document.getElementById("confirmPassword").value;
-const updatePasswordBtn = document.getElementById("updatePasswordBtn").value;
 
 async function getUserDetails() {
   if (storedUser) {
@@ -76,30 +72,34 @@ logoutbtn.addEventListener("click", () => {
 async function updateUserProfile() {
   try {
     // Show loading state
-    const saveButton = document.querySelector('button[type="submit"]');
+    const saveButton = document.getElementById("updateProfileBtn");
     const originalButtonText = saveButton.innerHTML;
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
     saveButton.disabled = true;
 
-    // Get form values
-    const firstName = document.getElementById("firstName").value;
-    const lastName = document.getElementById("lastName").value;
-    const email = document.getElementById("email").value;
-    const phone = document.getElementById("phone").value;
-    const address = document.getElementById("address").value;
-    const updateProfileBtn = document.getElementById("updateProfileBtn").value;
+    // Get form values from the correct fields
+    const firstName = document.getElementById("accFname").value.trim();
+    const lastName = document.getElementById("accLname").value.trim();
+    const email = document.getElementById("accEmail").value.trim();
+    const phone = document.getElementById("accPhone").value.trim();
+    const address = document.getElementById("accAddress").value.trim();
 
     // Get current user
     const user = auth.currentUser;
-
     if (!user) {
       throw new Error("No user is currently signed in");
     }
 
-    // Update user profile in Firebase Auth
-    await updateUserProfile(user, {
+    // Optionally update displayName in Firebase Auth
+    await updateProfile(user, {
       displayName: `${firstName} ${lastName}`,
     });
+
+    // Optionally update email in Firebase Auth if changed
+    if (user.email !== email) {
+      // You may want to add re-authentication here for security
+      await user.updateEmail(email);
+    }
 
     // Update user data in Firestore
     const userRef = doc(db, "users", user.uid);
@@ -110,11 +110,11 @@ async function updateUserProfile() {
         lastName,
         email,
         phone,
-        address,
+        location: address,
         updatedAt: new Date().toISOString(),
       },
       { merge: true }
-    ); // Use merge to only update these fields
+    );
 
     // Update localStorage
     const userData = JSON.parse(localStorage.getItem("userData") || "{}");
@@ -124,7 +124,7 @@ async function updateUserProfile() {
       lastName,
       email,
       phone,
-      address,
+      location: address,
     };
     localStorage.setItem("userData", JSON.stringify(updatedUserData));
 
@@ -141,8 +141,9 @@ async function updateUserProfile() {
     showNotification(`Error: ${error.message}`, "error");
 
     // Reset button state
-    const saveButton = document.querySelector('button[type="submit"]');
-    saveButton.innerHTML = "Save Changes";
+    const saveButton = document.getElementById("updateProfileBtn");
+    saveButton.innerHTML =
+      "<span class='btn-text'>Save Changes</span><span>Save Changes</span>";
     saveButton.disabled = false;
 
     return false;
@@ -152,15 +153,13 @@ async function updateUserProfile() {
 async function resetPassword() {
   try {
     // Show loading state
-    const saveButton = document.querySelector(
-      '#security button[type="submit"]'
-    );
+    const saveButton = document.querySelector("#securityForm button");
     const originalButtonText = saveButton.innerHTML;
     saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Updating...';
     saveButton.disabled = true;
 
     // Get form values
-    const currentPassword = document.getElementById("currentPassword").value;
+    const currentPassword = document.getElementById("oldPassword").value;
     const newPassword = document.getElementById("newPassword").value;
     const confirmPassword = document.getElementById("confirmPassword").value;
 
@@ -194,7 +193,7 @@ async function resetPassword() {
     showNotification("Password updated successfully!", "success");
 
     // Clear form
-    document.getElementById("currentPassword").value = "";
+    document.getElementById("oldPassword").value = "";
     document.getElementById("newPassword").value = "";
     document.getElementById("confirmPassword").value = "";
 
@@ -214,10 +213,9 @@ async function resetPassword() {
     }
 
     // Reset button state
-    const saveButton = document.querySelector(
-      '#security button[type="submit"]'
-    );
-    saveButton.innerHTML = "Update Password";
+    const saveButton = document.querySelector("#securityForm button");
+    saveButton.innerHTML =
+      "<span class='btn-text' id='updatePasswordBtn'>Update Password</span><span>Update Password</span>";
     saveButton.disabled = false;
 
     return false;
@@ -252,25 +250,33 @@ function showNotification(message, type = "info") {
   }, 5000);
 }
 
-// Add event listener to the form
+// Add event listener to the Save Changes button in Account Details form
 document.addEventListener("DOMContentLoaded", function () {
-  const profileForm = document.querySelector("#account-details form");
-  if (profileForm) {
-    profileForm.addEventListener("submit", async function (e) {
+  const updateProfileBtn = document.getElementById("updateProfileBtn");
+  if (updateProfileBtn) {
+    updateProfileBtn.addEventListener("click", async function (e) {
       e.preventDefault();
-      await updateProfile();
+      await updateUserProfile();
     });
   }
 });
 
-// Add event listener to the security form
+// Add event listener to the Security form for password update
 document.addEventListener("DOMContentLoaded", function () {
-  const securityForm = document.querySelector("#security form");
+  const securityForm = document.getElementById("securityForm");
   if (securityForm) {
     securityForm.addEventListener("submit", async function (e) {
       e.preventDefault();
       await resetPassword();
     });
+    // Also allow the button to trigger the reset
+    const updatePasswordBtn = securityForm.querySelector("button");
+    if (updatePasswordBtn) {
+      updatePasswordBtn.addEventListener("click", async function (e) {
+        e.preventDefault();
+        await resetPassword();
+      });
+    }
   }
   updateCartUI();
 });

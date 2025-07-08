@@ -10,6 +10,10 @@ import {
 } from "./firebase-config.js";
 // import { addToCart, showToast, updateCartBadge } from "./cart.js";
 import { addToCart, showToast, updateCartUI } from "./cart.js";
+import {
+  buildCategoriesFromProducts,
+  renderAllCategoriesDropdown,
+} from "./categories.js";
 
 // Constants
 const PRODUCTS_PER_PAGE = 20;
@@ -80,9 +84,11 @@ function updateProductListWithFilters(allProducts) {
   const filtered = filterProducts(allProducts, filterState);
   if (filtered.length > 0) {
     renderProducts(filtered);
+    updateResultsCount(filtered.length, filtered.length);
   } else {
     productsList.innerHTML =
       "<p>No products found for the selected filters.</p>";
+    updateResultsCount(0, 0);
   }
 }
 
@@ -187,7 +193,7 @@ function createProductCard(product) {
         <div class="image-box mb-16">
           ${
             hasSale
-              ? '<span class="sale-label subtitle fw-400 white">Sale</span>'
+              ? '<span class="sale-label subtitle fw-400 white" style="z-index:100">Sale</span>'
               : ""
           }
           <a href="product-detail.html?id=${product.id}" class="image">
@@ -213,7 +219,9 @@ function createProductCard(product) {
                 </a>
               </li>
               <li>
-                <a href="#" class="btn" data-bs-toggle="modal" data-bs-target="#productQuickView">
+                <a href="#" class="btn quick-view-btn" data-product-id="${
+                  product.id
+                }">
                   <i class="fa-regular fa-eye"></i>
                 </a>
               </li>
@@ -241,7 +249,7 @@ function createProductCard(product) {
             <p class="fw-500">(246)</p>
           </div>
           <div class="d-flex align-items-center gap-8 justify-content-center mb-2">
-            <h5 class="medium-black fw-700 mb-0">${formatPrice(
+            <h5 class="medium-black fw-700 mb-0" style="font-size:20px">${formatPrice(
               hasSale ? product.salePrice : product.price
             )}</h5>
             ${
@@ -290,6 +298,26 @@ function renderProducts(productsToRender) {
     productsList.innerHTML += createProductCard(product);
   });
   initLazyLoading();
+  updateResultsCount(productsToRender.length);
+  attachQuickViewListeners();
+}
+
+function updateResultsCount(currentCount, totalCount = null) {
+  const resultsElem = document.getElementById("showingResults");
+  if (!resultsElem) return;
+  let start = (currentPage - 1) * PRODUCTS_PER_PAGE + 1;
+  let end = start + currentCount - 1;
+  if (currentCount === 0) {
+    resultsElem.textContent = "No results found";
+    return;
+  }
+  if (totalCount === null) totalCount = allProducts.length;
+  // Clamp end to totalCount
+  end = Math.min(end, totalCount);
+  resultsElem.textContent = `Showing ${String(start).padStart(
+    2,
+    "0"
+  )} - ${String(end).padStart(2, "0")} of ${totalCount} Results`;
 }
 
 async function fetchAllProducts() {
@@ -331,8 +359,10 @@ async function displaySearchResults(searchTerm) {
 
   if (filteredProducts.length > 0) {
     renderProducts(filteredProducts);
+    updateResultsCount(filteredProducts.length, filteredProducts.length);
   } else {
     productsList.innerHTML = "<p>No products found for your search.</p>";
+    updateResultsCount(0, 0);
   }
 }
 
@@ -374,6 +404,7 @@ async function displayPaginatedProducts(page = 1) {
 
   const products = await fetchPaginatedProducts(startAfterDoc);
   renderProducts(products);
+  updateResultsCount(products.length, allProducts.length);
   renderPagination();
 }
 
@@ -434,22 +465,6 @@ function handleAddToCart(e) {
   }
 }
 
-// Build categories object from products
-function buildCategoriesFromProducts(products) {
-  const categories = {};
-  products.forEach((product) => {
-    const cat = product.category || "Uncategorized";
-    const subcat = product.subcategory || "Other";
-    if (!categories[cat]) categories[cat] = new Set();
-    categories[cat].add(subcat);
-  });
-  // Convert sets to arrays
-  Object.keys(categories).forEach((cat) => {
-    categories[cat] = Array.from(categories[cat]);
-  });
-  return categories;
-}
-
 // Render the category accordion dynamically
 function renderCategoryAccordion(
   categories,
@@ -494,32 +509,16 @@ function renderCategoryAccordion(
   placeholder.innerHTML = menuHTML;
 }
 
-function renderAllCategoriesDropdown(categories) {
-  console.log("Dropdown categories:", categories); // Debug
-  const dropdown = document.getElementById("allCategoriesDropdown");
-  if (!dropdown) return;
-  let html = '<ul class="all-categories-list">';
-  for (const category in categories) {
-    html += `<li class="dropdown-category">
-      <span class="category-title">${category}</span>
-      <ul class="subcategories-list">`;
-    categories[category].forEach((subcat) => {
-      const isActive = filterState.subcategories.includes(subcat)
-        ? "active"
-        : "";
-      html += `<li class="subcategory-item ${isActive}" data-subcat="${subcat}">${subcat}</li>`;
-    });
-    html += "</ul></li>";
-  }
-  html += "</ul>";
-  dropdown.innerHTML = html;
-  console.log("Dropdown HTML:", dropdown.innerHTML); // Debug
-
-  // Add click handlers to subcategory items
-  dropdown.querySelectorAll(".subcategory-item").forEach((item) => {
-    item.addEventListener("click", function (e) {
-      e.stopPropagation();
-      const subcat = this.getAttribute("data-subcat");
+async function initShopPage() {
+  const allFetchedProducts = await fetchAllProducts();
+  const categories = buildCategoriesFromProducts(allFetchedProducts);
+  renderCategoryAccordion(categories);
+  const dropdownElem = document.getElementById("allCategoriesDropdown");
+  renderAllCategoriesDropdown(
+    categories,
+    dropdownElem,
+    filterState,
+    function subcatHandler(subcat) {
       // Toggle subcategory filter
       if (filterState.subcategories.includes(subcat)) {
         filterState.subcategories = filterState.subcategories.filter(
@@ -529,19 +528,17 @@ function renderAllCategoriesDropdown(categories) {
         filterState.subcategories = [subcat]; // Only one at a time for dropdown
       }
       updateProductListWithFilters(allProducts);
-      // Re-render dropdown to update active state
-      renderAllCategoriesDropdown(categories);
+      // Optionally re-render dropdown to update active state
+      renderAllCategoriesDropdown(
+        categories,
+        dropdownElem,
+        filterState,
+        subcatHandler
+      );
       // Hide dropdown after selection
-      dropdown.style.display = "none";
-    });
-  });
-}
-
-async function initShopPage() {
-  const allFetchedProducts = await fetchAllProducts();
-  const categories = buildCategoriesFromProducts(allFetchedProducts);
-  renderCategoryAccordion(categories);
-  renderAllCategoriesDropdown(categories);
+      dropdownElem.style.display = "none";
+    }
+  );
   setupCategoryFilterListeners(allFetchedProducts);
   setupPriceFilterListeners(allFetchedProducts);
   setupOtherFilterListeners(allFetchedProducts);
@@ -562,6 +559,7 @@ async function initShopPage() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  createQuickViewModal();
   initShopPage();
   updateCartUI();
   productsList.addEventListener("click", handleAddToCart);
@@ -594,4 +592,275 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+  // Sort dropdown functionality
+  const sortDropdown = document.getElementById("sortDropdown");
+  if (sortDropdown) {
+    sortDropdown.addEventListener("click", function (e) {
+      const li = e.target.closest("li");
+      if (!li) return;
+      const sortType = li.textContent.trim();
+      let sortedProducts = [...allProducts];
+      if (sortType === "Newest") {
+        sortedProducts.sort((a, b) => {
+          if (!a.createdAt || !b.createdAt) return 0;
+          return b.createdAt.seconds - a.createdAt.seconds;
+        });
+      } else if (sortType === "Oldest") {
+        sortedProducts.sort((a, b) => {
+          if (!a.createdAt || !b.createdAt) return 0;
+          return a.createdAt.seconds - b.createdAt.seconds;
+        });
+      } else if (sortType === "On Sale") {
+        sortedProducts = sortedProducts.filter(
+          (p) => p.salePrice && p.salePrice < p.price
+        );
+      } // 'All' just uses allProducts as is
+      renderProducts(sortedProducts);
+      updateResultsCount(sortedProducts.length, sortedProducts.length);
+      // Update selected display
+      const selectedDisplay = document.getElementById("destination8");
+      if (selectedDisplay) selectedDisplay.textContent = sortType;
+    });
+  }
+
+  const dropdownBtn = document.getElementById("allCategoriesDropdownBtn");
+  const dropdownElem = document.getElementById("allCategoriesDropdown");
+
+  if (dropdownBtn && dropdownElem) {
+    dropdownBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      // Toggle display
+      if (dropdownElem.style.display === "block") {
+        dropdownElem.style.display = "none";
+      } else {
+        dropdownElem.style.display = "block";
+      }
+    });
+
+    // Hide dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!dropdownElem.contains(e.target) && !dropdownBtn.contains(e.target)) {
+        dropdownElem.style.display = "none";
+      }
+    });
+  }
 });
+
+function createQuickViewModal() {
+  const modalHTML = `
+    <div class="modal fade" id="productQuickView" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-hidden="true" hidden>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="shop-detail">
+                        <div class="detail-wrapper">
+                            <div class="row row-gap-4">
+                                <div class="col-lg-6">
+                                    <div class="quick-image-box">
+                                        <img src="" alt="" id="quickViewImage">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="product-text-container bg-white br-20">
+                                        <div class="close-content text-end">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <h4 class="medium-black fw-700 mb-16" id="quickViewTitle"></h4>
+                                        <div class="d-flex align-items-center flex-wrap gap-8 mb-16">
+                                            <h6 class="color-star" id="quickViewRating">★★★★★</h6>
+                                            <p class="dark-gray subtitle" id="quickViewReviews"></p>
+                                        </div>
+                                        <div class="d-flex align-items-center justify-content-between mb-24">
+                                            <div class="d-flex align-items-center gap-16">
+                                                <h5 class="fw-600 color-primary" id="quickViewPrice"></h5>
+                                                <p class="fw-500 text-decoration-line-through" id="quickViewSalePrice"></p>
+                                            </div>
+                                        </div>
+                                        <p class="mb-24" id="quickViewDescription"></p>
+                                        <p class="subtitle color-primary mb-24" id="quickViewStock"></p>
+                                        <div class="function-bar mb-24">
+                                            <div class="quantity quantity-wrap">
+                                                <div class="input-area quantity-wrap">
+                                                    <input class="decrement quantity-btn minus" type="button" value="-">
+                                                    <input type="text" name="quantity" value="1" maxlength="2" size="1"
+                                                        class="number" id="quickViewQuantity">
+                                                    <input class="increment quantity-btn plus" type="button" value="+">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-12 mb-24">
+                                            <p class="fw-600 medium-black">Subtotal:</p>
+                                            <p id="quickViewSubtotal"></p>
+                                        </div>
+                                        <div class="row mb-24 row-gap-2">
+                                            <div class="col-md-6">
+                                                <button class="cus-btn w-100 text-center add-to-cart-quick-view" id="quickViewAddToCart">
+                                                    <span class="btn-text">Add to Cart</span>
+                                                    <span>Go to Cart</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <a href="checkout.html" class="cus-btn-2 btn-sec w-100 text-center">
+                                                    <span class="btn-text">Buy it Now</span>
+                                                    <span>Go to Checkout</span>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  `;
+
+  // Add modal to body if it doesn't exist
+  if (!document.getElementById("productQuickView")) {
+    document.body.insertAdjacentHTML("beforeend", modalHTML);
+  }
+}
+
+function updateQuickView(product) {
+  console.log("Quick View Product:", product); // Debug log
+  const modal = document.getElementById("productQuickView");
+  if (!modal) return;
+
+  const hasSale = product.salePrice && product.salePrice < product.price;
+
+  // Update modal content with null checks
+  const imgElem = document.getElementById("quickViewImage");
+  if (imgElem) {
+    imgElem.src = product.featuredImage || "assets/media/placeholder.jpg";
+    imgElem.alt = product.name || "";
+  }
+  const titleElem = document.getElementById("quickViewTitle");
+  if (titleElem) titleElem.textContent = product.name || "";
+
+  const priceElem = document.getElementById("quickViewPrice");
+  if (priceElem)
+    priceElem.textContent = formatPrice(
+      hasSale ? product.salePrice : product.price
+    );
+
+  const salePriceElem = document.getElementById("quickViewSalePrice");
+  if (salePriceElem) {
+    if (hasSale) {
+      salePriceElem.textContent = formatPrice(product.price);
+      salePriceElem.style.display = "inline-block";
+      salePriceElem.style.textDecoration = "line-through";
+      salePriceElem.style.marginLeft = "10px";
+      salePriceElem.style.color = "#999";
+    } else {
+      salePriceElem.style.display = "none";
+    }
+  }
+
+  const descElem = document.getElementById("quickViewDescription");
+  if (descElem)
+    descElem.innerHTML = product.shortDescription || "No description available";
+
+  const ratingElement = document.getElementById("quickViewRating");
+  if (ratingElement) {
+    ratingElement.innerHTML =
+      typeof createRatingStars === "function" ? createRatingStars() : "★★★★★";
+  }
+
+  const reviewsElement = document.getElementById("quickViewReviews");
+  if (reviewsElement) {
+    reviewsElement.textContent = `(${product.reviews?.length || 0})`;
+  }
+
+  // Reset quantity to 1
+  const quantityInput = document.getElementById("quickViewQuantity");
+  if (quantityInput) {
+    quantityInput.value = 1;
+  }
+
+  // Update subtotal
+  const subtotalElem = document.getElementById("quickViewSubtotal");
+  function updateSubtotal() {
+    if (subtotalElem && quantityInput) {
+      const qty = parseInt(quantityInput.value) || 1;
+      const unitPrice = hasSale ? product.salePrice : product.price;
+      subtotalElem.textContent = formatPrice(qty * unitPrice);
+    }
+  }
+  updateSubtotal();
+
+  // Add event listener for add to cart button
+  const addToCartBtn = document.getElementById("quickViewAddToCart");
+  if (addToCartBtn) {
+    // Remove any existing event listeners
+    const newAddToCartBtn = addToCartBtn.cloneNode(true);
+    addToCartBtn.parentNode.replaceChild(newAddToCartBtn, addToCartBtn);
+
+    newAddToCartBtn.onclick = () => {
+      const quantity = parseInt(quantityInput?.value) || 1;
+      addToCart(product, quantity);
+      showToast(`${product.name} added to cart successfully!`);
+
+      // Close modal
+      const modalInstance = bootstrap.Modal.getInstance(modal);
+      if (modalInstance) {
+        modalInstance.hide();
+      }
+    };
+  }
+
+  // Add event listeners for quantity buttons
+  const minusBtn = modal.querySelector(".quantity-btn.minus");
+  const plusBtn = modal.querySelector(".quantity-btn.plus");
+
+  if (minusBtn && plusBtn && quantityInput) {
+    // Remove any existing event listeners
+    const newMinusBtn = minusBtn.cloneNode(true);
+    const newPlusBtn = plusBtn.cloneNode(true);
+    minusBtn.parentNode.replaceChild(newMinusBtn, minusBtn);
+    plusBtn.parentNode.replaceChild(newPlusBtn, plusBtn);
+
+    newMinusBtn.onclick = () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      if (currentValue > 1) {
+        quantityInput.value = currentValue - 1;
+        updateSubtotal();
+      }
+    };
+
+    newPlusBtn.onclick = () => {
+      const currentValue = parseInt(quantityInput.value) || 1;
+      quantityInput.value = currentValue + 1;
+      updateSubtotal();
+    };
+  }
+
+  // Also update subtotal on manual quantity input
+  if (quantityInput) {
+    quantityInput.oninput = updateSubtotal;
+  }
+}
+
+// Attach quick view listeners to buttons
+function attachQuickViewListeners() {
+  document.querySelectorAll(".quick-view-btn").forEach((button) => {
+    button.addEventListener("click", (e) => {
+      e.preventDefault();
+      const productId = button.dataset.productId;
+      const product = allProducts.find((p) => p.id === productId);
+      if (product) {
+        updateQuickView(product);
+        // Show the modal using Bootstrap's API
+        const modal = document.getElementById("productQuickView");
+        if (modal && typeof bootstrap !== "undefined" && bootstrap.Modal) {
+          const bsModal = bootstrap.Modal.getOrCreateInstance(modal);
+          bsModal.show();
+        }
+      }
+    });
+  });
+}

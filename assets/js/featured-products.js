@@ -8,7 +8,10 @@ import {
   limit,
 } from "./firebase-config.js";
 import { addToCart, showToast } from "./cart.js";
-
+import {
+  buildCategoriesFromProducts,
+  renderAllCategoriesDropdown,
+} from "./categories.js";
 // Function to format price
 function formatPrice(price) {
   return `GHS ${price.toFixed(2)}`;
@@ -436,6 +439,47 @@ async function displayFeaturedProducts() {
   }
 }
 
+// Function to fetch all products (for categories dropdown)
+async function fetchAllProductsForCategories() {
+  try {
+    const productsQuery = query(
+      collection(db, "products"),
+      where("isActive", "==", true)
+    );
+    const querySnapshot = await getDocs(productsQuery);
+    const products = [];
+    querySnapshot.forEach((doc) => {
+      products.push({ id: doc.id, ...doc.data() });
+    });
+    return products;
+  } catch (error) {
+    console.error("Error fetching all products for categories:", error);
+    return [];
+  }
+}
+
+// Render categories dropdown on front page if container exists
+async function renderFrontPageCategoriesDropdown() {
+  const dropdownElem = document.getElementById("allCategoriesDropdown");
+  if (!dropdownElem) return;
+  const products = await fetchAllProductsForCategories();
+  const categories = buildCategoriesFromProducts(products);
+  // Handler: redirect to shop.html with subcategory as a query param
+  function onSubcategorySelect(subcat) {
+    // You can use 'search' or 'subcategory' as the param name
+    window.location.href = `shop.html?subcategory=${encodeURIComponent(
+      subcat
+    )}`;
+  }
+  const filterState = { subcategories: [] };
+  renderAllCategoriesDropdown(
+    categories,
+    dropdownElem,
+    filterState,
+    onSubcategorySelect
+  );
+}
+
 // Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", () => {
   // Wait for jQuery and Slick to be loaded
@@ -453,4 +497,26 @@ document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     clearInterval(checkDependencies);
   }, 5000);
+
+  renderFrontPageCategoriesDropdown();
+
+  // Dropdown open/close logic for front page
+  const dropdownBtn = document.getElementById("allCategoriesDropdownBtn");
+  const dropdownElem = document.getElementById("allCategoriesDropdown");
+  if (dropdownBtn && dropdownElem) {
+    dropdownBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      if (dropdownElem.style.display === "block") {
+        dropdownElem.style.display = "none";
+      } else {
+        dropdownElem.style.display = "block";
+      }
+    });
+    // Hide dropdown when clicking outside
+    document.addEventListener("click", function (e) {
+      if (!dropdownElem.contains(e.target) && !dropdownBtn.contains(e.target)) {
+        dropdownElem.style.display = "none";
+      }
+    });
+  }
 });
