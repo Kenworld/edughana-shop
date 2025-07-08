@@ -54,12 +54,10 @@
                                 </a>
                                 <div class="cart-button-wrapper">
                                     <a href="#" class="button-block cart-button">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="18"
-                                            viewBox="0 0 19 18" fill="none">
-                                            <path
-                                                d="M17.4869 16.1063C17.0473 13.0299 15.9747 5.52124 15.9747 5.52124C15.9376 5.26112 15.7148 5.06792 15.452 5.06792H13.1524V3.33377C12.9831 -1.11295 6.60873 -1.10957 6.44108 3.33377V5.06792H4.14146C3.8787 5.06792 3.65596 5.26112 3.61879 5.52124C3.61879 5.52124 2.54624 13.0299 2.10657 16.1063C2.03846 16.5828 2.18032 17.0645 2.49566 17.428C2.81101 17.7915 3.26782 18 3.74899 18H15.8445C16.3257 18 16.7825 17.7915 17.0978 17.428C17.4132 17.0646 17.555 16.5828 17.4869 16.1063ZM7.49708 3.33377C7.61306 0.286388 11.9815 0.288675 12.0964 3.33377V5.06792H7.49708V3.33377ZM16.3002 16.736C16.1855 16.8682 16.0194 16.944 15.8445 16.944H3.74899C3.57405 16.944 3.40798 16.8682 3.29331 16.736C3.1787 16.6039 3.12717 16.4289 3.15191 16.2557C3.52664 13.6339 4.361 7.79284 4.5994 6.12389H6.44111V7.29249C6.46709 7.99228 7.47135 7.99175 7.49708 7.29249V6.12389H12.0964V7.29249C12.1224 7.99228 13.1267 7.99175 13.1524 7.29249V6.12389H14.9941C15.2325 7.79284 16.0669 13.6339 16.4416 16.2557C16.4663 16.4289 16.4148 16.6039 16.3002 16.736Z"
-                                                fill="#1E1F20" />
-                                        </svg>
+                                        <a href="#" class="button-block cart-button">
+                                            <i class="fa fa-shopping-cart" style="font-size: 30px;"></i>
+                                            <span class="cart-badge" id="cartTotal">0</span> <!-- Badge -->
+                                        </a>
                                         <span class="cart-badge" id="cartTotal">0</span> <!-- Badge -->
                                     </a>
                                 </div>
@@ -79,15 +77,23 @@
                         <div class="col-lg-6 d-lg-flex d-none">
                             <nav class="navigation d-flex align-items-center">
                                 <div class="menu-button-right">
-                                    <div class="main-menu__nav">
+                                    <div class="main-menu__nav" style="display: flex; align-items: center;">
+                                        <!-- All Categories Dropdown (outside the menu list) -->
+                                        <div class="dropdown" id="allCategoriesDropdownWrapper"
+                                            style="position:relative; margin-right: 16px;" hidden>
+                                            <a href="#" id="allCategoriesDropdownBtn">
+                                                <i class="fa fa-list"> </i>&nbsp; All Categories <i
+                                                    class="fa fa-chevron-down"></i>
+                                            </a>
+                                            <div id="allCategoriesDropdown"></div>
+                                        </div>
+                                        <!-- Main Menu List -->
                                         <ul class="main-menu__list">
                                             <li>
-                                                <a href="index.html" class="active"><i class="fa fa-home"></i>Home</a>
+                                                <a href="index.html"><i class="fa fa-home"></i>Home</a>
                                             </li>
-
                                             <li class="dropdown">
-                                                <a href="shop.html"><i class="fa fa-gift"></i>Shop </a>
-
+                                                <a class="active" href="shop.html"><i class="fa fa-gift"></i>Shop </a>
                                             </li>
                                             <li>
                                                 <a href="cart.html"><i class="fa fa-shopping-cart"></i>Cart</a>
@@ -95,7 +101,6 @@
                                             <li class="dropdown">
                                                 <a href="account.html" class="requires-auth"><i
                                                         class="fa fa-user"></i>My Account</a>
-
                                             </li>
                                             <li>
                                                 <a href="account.html#orders" class="requires-auth"><i
@@ -321,7 +326,7 @@
                                     <a href="about.html">About Us</a>
                                 </li>
                                 <li class="mb-8">
-                                    <a href="blog-grid.html">Blog List</a>
+                                    <a href="blogs.html">Blog</a>
                                 </li>
                                 <li class="mb-8">
                                     <a href="about.html">About Us</a>
