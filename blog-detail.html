@@ -149,9 +149,10 @@
                 <div class="container-2">
                     <div class="row row-gap-4">
                         <div class="col-lg-9">
-                            <div class="blog-detail-wrapper">
+                            <div class="blog-detail-wrapper" id="blogDetails">
                                 <div class="main-image mb-24">
-                                    <img src="assets/media/collections/kids.jpg" alt="" class="w-100 br-10">
+                                    <img src="assets/media/collections/kids.jpg" alt="" class="w-100 br-10"
+                                        id="featuredimage">
                                 </div>
                                 <h1 class="fw-500 medium-black text-sm-start text-center">The importance of Kids
                                     learning Abacus at an early age</h1>
@@ -186,37 +187,8 @@
                                             <i class="fa-light fa-chevron-up"></i>
                                         </span>
                                     </div>
-                                    <div class="content-block mt-24">
-                                        <a href="blog-detail.html"
-                                            class="recent-blogs d-flex gap-12 align-items-center mb-16">
-                                            <div class="image-box d-flex flex-shrink-0">
-                                                <img src="assets/media/collections/ed.jpeg" alt="" class="br-5">
-                                            </div>
-                                            <div>
-                                                <p class="text mb-8">10 things that improves the brain</p>
-                                                <p class="subtitle fw-500 light-gray">08 Sep, 2024</p>
-                                            </div>
-                                        </a>
-                                        <a href="blog-detail.html"
-                                            class="recent-blogs d-flex gap-12 align-items-center mb-16">
-                                            <div class="image-box d-flex flex-shrink-0">
-                                                <img src="assets/media/collections/ed.jpeg" alt="" class="br-5">
-                                            </div>
-                                            <div>
-                                                <p class="text mb-8">10 things that improves the brain</p>
-                                                <p class="subtitle fw-500 light-gray">08 Sep, 2024</p>
-                                            </div>
-                                        </a>
-                                        <a href="blog-detail.html"
-                                            class="recent-blogs d-flex gap-12 align-items-center mb-16">
-                                            <div class="image-box d-flex flex-shrink-0">
-                                                <img src="assets/media/collections/ed.jpeg" alt="" class="br-5">
-                                            </div>
-                                            <div>
-                                                <p class="text mb-8">10 things that improves the brain</p>
-                                                <p class="subtitle fw-500 light-gray">08 Sep, 2024</p>
-                                            </div>
-                                        </a>
+                                    <div class="content-block mt-24" id="latestPosts">
+
                                     </div>
                                     <div class="hr-line line-2 mb-24">
                                         <div class="category-block box-1 mb-32 wow fadeInUp animated animated animated"
@@ -574,6 +546,7 @@
     </div>
     <!-- Modal -->
     <script type="module" src="assets/js/authentication.js"></script>
+    <script type="module" src="assets/js/blog-detail.js"></script>
     <!-- Jquery Js -->
     <script src="assets/js/vendor/bootstrap.min.js"></script>
     <script src="assets/js/vendor/jquery-3.6.3.min.js"></script>
