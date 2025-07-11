@@ -165,9 +165,11 @@ function updateSidebarCart(cart, total) {
                         <img src="${item.featuredImage}" alt="${item.name}">
                     </div>
                     <div class="prod-title">
-                        <a href="#" class="h6 medium-black font-sec fw-700 mb-8">${
-                          item.name
-                        }</a>
+                        <a href="product-detail.html?id=${
+                          item.id
+                        }" class="h6 medium-black font-sec fw-700 mb-8" target="_blank">
+                          ${item.name}
+                        </a>
                         <p class="subtitle mb-4p">Quantity: ${item.quantity}</p>
                         <p class="subtitle">${formatPrice(
                           item.salePrice && item.salePrice < item.price

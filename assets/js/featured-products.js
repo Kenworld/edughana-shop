@@ -461,15 +461,30 @@ async function fetchAllProductsForCategories() {
 // Render categories dropdown on front page if container exists
 async function renderFrontPageCategoriesDropdown() {
   const dropdownElem = document.getElementById("allCategoriesDropdown");
-  if (!dropdownElem) return;
+  if (!dropdownElem) {
+    console.error("#allCategoriesDropdown element not found!");
+    return;
+  }
   const products = await fetchAllProductsForCategories();
   const categories = buildCategoriesFromProducts(products);
   // Handler: redirect to shop.html with subcategory as a query param
-  function onSubcategorySelect(subcat) {
-    // You can use 'search' or 'subcategory' as the param name
-    window.location.href = `shop.html?subcategory=${encodeURIComponent(
-      subcat
-    )}`;
+  function onSubcategorySelect(selected, isCategory) {
+    alert("Clicked: " + selected + " isCategory: " + isCategory);
+    console.log(
+      "Category/Subcategory selected:",
+      selected,
+      "isCategory:",
+      isCategory
+    );
+    if (isCategory) {
+      window.location.href = `shop.html?category=${encodeURIComponent(
+        selected
+      )}`;
+    } else {
+      window.location.href = `shop.html?subcategory=${encodeURIComponent(
+        selected
+      )}`;
+    }
   }
   const filterState = { subcategories: [] };
   renderAllCategoriesDropdown(
@@ -478,6 +493,7 @@ async function renderFrontPageCategoriesDropdown() {
     filterState,
     onSubcategorySelect
   );
+  console.log("Dropdown rendered with categories:", categories);
 }
 
 // Initialize when DOM is loaded

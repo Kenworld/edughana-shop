@@ -165,7 +165,7 @@ h6,
 }
 h1,
 .h1 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(48px, 3.177vw, 180px);
   font-weight: 400;
   line-height: 120%;
@@ -184,7 +184,7 @@ h1,
 }
 h2,
 .h2 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(40px, 2.552vw, 140px);
   font-style: normal;
   font-weight: 400;
@@ -210,7 +210,7 @@ h2,
 }
 h3,
 .h3 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(26px, 2.031vw, 108px) !important;
   font-style: normal;
   font-weight: 400;
@@ -236,7 +236,7 @@ h3,
 }
 h4,
 .h4 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(27px, 1.615vw, 92px);
   font-style: normal;
   font-weight: 400;
@@ -262,7 +262,7 @@ h4,
 }
 h5,
 .h5 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(22px, 1.302vw, 84px);
   font-style: normal;
   font-weight: 400;
@@ -288,7 +288,7 @@ h5,
 }
 h6,
 .h6 {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-size: clamp(18px, 1.042vw, 61px);
   font-style: normal;
   font-weight: 400;
@@ -493,7 +493,7 @@ span {
   font-family: "Poppins", sans-serif;
 }
 .font-sec {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
 }
 .br-4 {
   border-radius: clamp(2px, 0.208vw, 28px);
@@ -1009,7 +1009,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -1029,7 +1029,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -1100,7 +1100,7 @@ cus-btn-whatsapp {
   display: inline-flex;
   justify-content: center;
   font-size: clamp(14px, 0.833vw, 40px);
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   font-weight: 700;
   line-height: 120%;
   padding: clamp(10px, 0.885vw, 40px) clamp(20px, 1.667vw, 72px);
@@ -3270,7 +3270,7 @@ header .header-buttons a:hover {
   text-align: center;
 }
 .latest-product-card .product-desc .product-title {
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   transition: all 0.5s ease-in-out;
   color: #0c0c0d;
   font-weight: 500;
@@ -3800,7 +3800,7 @@ footer .payment-cards .card-block img {
   cursor: pointer;
   color: #141516;
   border: 1px solid #45474f;
-  font-family: "Roboto", serif;
+  font-family: "Comfortaa", serif;
   background: #fff0;
   transition: 0.3s;
   user-select: none;
@@ -5460,7 +5460,7 @@ footer .payment-cards .card-block img {
 }
 .whatsapp-float {
   position: fixed;
-  bottom: 20px;
+  bottom: 150px;
   right: 20px;
   z-index: 1000;
   background-color: #25d366;
@@ -5791,11 +5791,31 @@ header .header-center .navigation .main-menu__list li a {
   color: #222;
   transition: background 0.2s, color 0.2s;
   outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .main-category-item:hover,
 .main-category-item:focus {
   background: #e6f7fa;
   color: #04d2e4;
+}
+.main-category-item:not(.no-subcat)::after {
+  content: "\f054"; /* FontAwesome fa-chevron-right */
+  font-family: "FontAwesome";
+  font-size: 12px;
+  color: #04d2e4;
+  margin-left: 8px;
+  transition: color 0.2s;
+}
+.main-category-item.no-subcat {
+  color: #04d2e4;
+  font-weight: 600;
+}
+.main-category-item.no-subcat:hover,
+.main-category-item.no-subcat:focus {
+  background: #e6f7fa;
+  color: #028fa1;
 }
 .subcategories-panel {
   flex: 1;

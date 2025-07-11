@@ -39,13 +39,19 @@ export function renderAllCategoriesDropdown(
     <div class="all-categories-dropdown-container">
       <ul class="main-categories-list">
         ${Object.keys(categories)
-          .map(
-            (cat, idx) => `
-              <li class="main-category-item" data-category="${cat}" tabindex="0">
-                <span class="category-title">${cat}</span>
-              </li>
-            `
-          )
+          .map((cat, idx) => {
+            const subcats = categories[cat];
+            const hasRealSubcats =
+              subcats.length > 1 ||
+              (subcats.length === 1 && subcats[0] !== "Other");
+            return `
+                <li class="main-category-item${
+                  hasRealSubcats ? "" : " no-subcat"
+                }" data-category="${cat}" tabindex="0">
+                  <span class="category-title">${cat}</span>
+                </li>
+              `;
+          })
           .join("")}
       </ul>
       <div class="subcategories-panel"></div>
@@ -60,12 +66,18 @@ export function renderAllCategoriesDropdown(
 
   // Helper to render subcategories for a given category
   function showSubcategories(category) {
-    if (!categories[category]) {
+    const subcats = categories[category];
+    // Only show panel if there are real subcategories
+    if (
+      !subcats ||
+      subcats.length === 0 ||
+      (subcats.length === 1 && subcats[0] === "Other")
+    ) {
       subcategoriesPanel.innerHTML = "";
       return;
     }
     let subcatHtml = `<ul class="subcategories-list">`;
-    categories[category].forEach((subcat) => {
+    subcats.forEach((subcat) => {
       const isActive =
         filterState.subcategories && filterState.subcategories.includes(subcat)
           ? "active"
@@ -81,35 +93,63 @@ export function renderAllCategoriesDropdown(
         e.stopPropagation();
         const subcat = this.getAttribute("data-subcat");
         if (typeof onSubcategorySelect === "function") {
-          onSubcategorySelect(subcat);
+          onSubcategorySelect(subcat, false); // false = subcategory
         }
       });
     });
   }
 
-  // Desktop: show subcategories on hover
+  // Desktop: show subcategories on hover (only for categories with real subcats)
   mainCategoryItems.forEach((item) => {
-    item.addEventListener("mouseenter", function () {
-      showSubcategories(this.getAttribute("data-category"));
-    });
+    const cat = item.getAttribute("data-category");
+    const subcats = categories[cat];
+    const hasRealSubcats =
+      subcats.length > 1 || (subcats.length === 1 && subcats[0] !== "Other");
+    if (hasRealSubcats) {
+      item.addEventListener("mouseenter", function () {
+        showSubcategories(cat);
+      });
+    }
   });
 
-  // Mobile: show subcategories on click
+  // Mobile: show subcategories on click (only for categories with real subcats)
   mainCategoryItems.forEach((item) => {
-    item.addEventListener("click", function (e) {
-      // Only trigger on click for touch devices
-      if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+    const cat = item.getAttribute("data-category");
+    const subcats = categories[cat];
+    const hasRealSubcats =
+      subcats.length > 1 || (subcats.length === 1 && subcats[0] !== "Other");
+    if (hasRealSubcats) {
+      item.addEventListener("click", function (e) {
+        if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
+          e.preventDefault();
+          showSubcategories(cat);
+        }
+      });
+    } else {
+      // For categories with no real subcats, clicking triggers the callback directly
+      item.addEventListener("click", function (e) {
         e.preventDefault();
-        showSubcategories(this.getAttribute("data-category"));
-      }
-    });
+        if (typeof onSubcategorySelect === "function") {
+          onSubcategorySelect(cat, true); // true = main category
+        }
+      });
+    }
   });
 
   // Optionally, show the first category's subcategories by default (desktop)
+  const firstCat = mainCategoryItems[0]?.getAttribute("data-category");
+  const firstSubcats = firstCat ? categories[firstCat] : [];
+  const firstHasRealSubcats =
+    firstSubcats &&
+    (firstSubcats.length > 1 ||
+      (firstSubcats.length === 1 && firstSubcats[0] !== "Other"));
   if (
     mainCategoryItems.length > 0 &&
-    !window.matchMedia("(hover: none) and (pointer: coarse)").matches
+    !window.matchMedia("(hover: none) and (pointer: coarse)").matches &&
+    firstHasRealSubcats
   ) {
-    showSubcategories(mainCategoryItems[0].getAttribute("data-category"));
+    showSubcategories(firstCat);
+  } else {
+    subcategoriesPanel.innerHTML = "";
   }
 }

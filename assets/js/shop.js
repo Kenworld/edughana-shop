@@ -49,12 +49,22 @@ function getPriceInputs() {
   };
 }
 
+function getQueryParam(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
+function normalizeString(str) {
+  return (str || "").toString().trim().toLowerCase();
+}
+
 function filterProducts(products, state) {
   let filtered = products;
   // Subcategory filter
   if (state.subcategories && state.subcategories.length) {
+    const normalizedSubs = state.subcategories.map(normalizeString);
     filtered = filtered.filter((p) =>
-      state.subcategories.includes(p.subcategory)
+      normalizedSubs.includes(normalizeString(p.subcategory))
     );
   }
   // Price filter
@@ -511,6 +521,7 @@ function renderCategoryAccordion(
 
 async function initShopPage() {
   const allFetchedProducts = await fetchAllProducts();
+  allProducts = allFetchedProducts; // Ensure global allProducts is set
   const categories = buildCategoriesFromProducts(allFetchedProducts);
   renderCategoryAccordion(categories);
   const dropdownElem = document.getElementById("allCategoriesDropdown");
@@ -518,23 +529,24 @@ async function initShopPage() {
     categories,
     dropdownElem,
     filterState,
-    function subcatHandler(subcat) {
-      // Toggle subcategory filter
-      if (filterState.subcategories.includes(subcat)) {
-        filterState.subcategories = filterState.subcategories.filter(
-          (s) => s !== subcat
+    function dropdownHandler(selected, isCategory) {
+      if (isCategory) {
+        // Filter by category
+        const catNorm = normalizeString(selected);
+        const filtered = allProducts.filter(
+          (p) => normalizeString(p.category || "Uncategorized") === catNorm
         );
+        renderProducts(filtered);
+        updateResultsCount(filtered.length, filtered.length);
       } else {
-        filterState.subcategories = [subcat]; // Only one at a time for dropdown
+        // Filter by subcategory
+        const subcatNorm = normalizeString(selected);
+        const filtered = allProducts.filter(
+          (p) => normalizeString(p.subcategory || "Other") === subcatNorm
+        );
+        renderProducts(filtered);
+        updateResultsCount(filtered.length, filtered.length);
       }
-      updateProductListWithFilters(allProducts);
-      // Optionally re-render dropdown to update active state
-      renderAllCategoriesDropdown(
-        categories,
-        dropdownElem,
-        filterState,
-        subcatHandler
-      );
       // Hide dropdown after selection
       dropdownElem.style.display = "none";
     }
@@ -560,7 +572,6 @@ async function initShopPage() {
 
 document.addEventListener("DOMContentLoaded", () => {
   createQuickViewModal();
-  initShopPage();
   updateCartUI();
   productsList.addEventListener("click", handleAddToCart);
   // No JS for dropdown show/hide; CSS :hover will handle it
@@ -644,6 +655,48 @@ document.addEventListener("DOMContentLoaded", () => {
         dropdownElem.style.display = "none";
       }
     });
+  }
+
+  // --- NEW: Filter by category or subcategory from URL ---
+  const urlParams = new URLSearchParams(window.location.search);
+  const subcategoryParam = urlParams.get("subcategory");
+  const categoryParam = urlParams.get("category");
+  if (subcategoryParam || categoryParam) {
+    fetchAllProducts().then((allFetchedProducts) => {
+      let filteredProducts = allFetchedProducts;
+      if (subcategoryParam) {
+        const subcatNorm = normalizeString(subcategoryParam);
+        filteredProducts = allFetchedProducts.filter((p) => {
+          const prodSubcat = normalizeString(p.subcategory || "Other");
+          return prodSubcat === subcatNorm;
+        });
+        filterState.subcategories = [subcategoryParam];
+        console.log(
+          "Filtering by subcategory:",
+          subcategoryParam,
+          filteredProducts
+        );
+      } else if (categoryParam) {
+        const catNorm = normalizeString(categoryParam);
+        filteredProducts = allFetchedProducts.filter((p) => {
+          const prodCat = normalizeString(p.category || "Uncategorized");
+          return prodCat === catNorm;
+        });
+        filterState.categories = [categoryParam];
+        console.log("Filtering by category:", categoryParam, filteredProducts);
+      }
+      if (filteredProducts.length > 0) {
+        renderProducts(filteredProducts);
+        updateResultsCount(filteredProducts.length, filteredProducts.length);
+      } else {
+        productsList.innerHTML =
+          "<p>No products found for the selected filters.</p>";
+        updateResultsCount(0, 0);
+      }
+    });
+  } else {
+    // Only call initShopPage if no filter param
+    initShopPage();
   }
 });
 
