@@ -59,7 +59,7 @@
                                             <i class="fa fa-shopping-cart" style="font-size: 30px;"></i>
                                             <span class="cart-badge" id="cartTotal">0</span> <!-- Badge -->
                                         </a>
-                                        <span class="cart-badge" id="cartTotal">0</span> <!-- Badge -->
+
                                     </a>
                                 </div>
 
@@ -630,7 +630,9 @@
                     <div class="d-flex align-items-center gap-3">
                         <img src="${item.featuredImage}" alt="${item.name}" class="rounded" style="width: 80px; height: 80px; object-fit: cover;">
                         <div>
-                            <h6 class="mb-1">${item.name}</h6>
+                            <h6 class="mb-1">
+                              <a href="product-detail.html?id=${item.id}" target="_blank">${item.name}</a>
+                            </h6>
                         </div>
                     </div>
                 </td>
@@ -720,6 +722,19 @@
 
     <script src="assets/js/app.js" type="module"></script>
     <script src="assets/js/search.js" type="module"></script>
+    <!--Start of Tawk.to Script-->
+    <script type="text/javascript">
+        var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+        (function () {
+            var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+            s1.async = true;
+            s1.src = 'https://embed.tawk.to/687130625795e1190e42aebf/1ivt2a0ok';
+            s1.charset = 'UTF-8';
+            s1.setAttribute('crossorigin', '*');
+            s0.parentNode.insertBefore(s1, s0);
+        })();
+    </script>
+    <!--End of Tawk.to Script-->
 </body>
 
 </html>
